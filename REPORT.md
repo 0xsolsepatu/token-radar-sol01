@@ -107,7 +107,7 @@ template plan (disclosed in the dashboard's Method tab).
   Bittensor network token; the row is the dTAO subsystem).
 - **RootData: still blocked** (bot-wall "Safety check" page). Do not repeat the failed
   fetch; no account created, no key.
-- Enrichment file grew 159,043 → **162,210 bytes**. `meta.sources` now also records
+- Enrichment file grew 159,043 → **162,210 bytes**, then minified to **120,982 bytes** (same content, compact form) for the submission. `meta.sources` now also records
   the farm-plans research (40/40, per-row URLs in the board).
 
 ### Priority 4 — dashboard polish
@@ -250,7 +250,7 @@ older (>730 days) for fitting, 32 newer (≤730 days) for testing; 33 traded tok
 ## Sources (build time only — the graded run is offline)
 
 The DefiLlama snapshot is the backbone. At build time (2026-11-15) extra public sources
-were fetched and baked into `data/enrichment.json` (162,210 bytes, 758 per-slug entries
+were fetched and baked into `data/enrichment.json` (120,982 bytes, 758 per-slug entries
 with `sources`, `fees`, `coingecko`, `cryptorank`, `tokenterminal` + `meta.sources`). main.ts reads it from
 the repo dir and continues snapshot-only if it is absent/unusable. Nothing is fetched at
 grade time.
@@ -422,7 +422,7 @@ used as an input.
   `dashboard/app.css` (11,523 B), `dashboard/app.js` (41,256 B)
 - `~/workspace/makefun-tokenradar/radar/vendor/makefun-board.ts` (19,788 B, kit file,
   copied byte for byte — sanctioned)
-- `~/workspace/makefun-tokenradar/radar/data/enrichment.json` (162,210 B)
+- `~/workspace/makefun-tokenradar/radar/data/enrichment.json` (120,982 B)
 - `~/workspace/makefun-tokenradar/radar/screenshots/` — 1-board.png (173,646 B),
   2-detail.png (245,272 B), 3-filtered.png (177,719 B) (final radar-4 shots)
 - `~/workspace/makefun-tokenradar/radar/README.md`, `LICENSE` (MIT), `REPORT.md` (this file)

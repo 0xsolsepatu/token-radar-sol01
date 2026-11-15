@@ -44,7 +44,7 @@ The board covers all 40 watchlist protocols plus every other rankable pre-token 
 
 ## Enrichment (build time only)
 
-The graded run is deterministic and offline — it reads only the snapshot and the static files in this repo. At build time (2026-11-15) extra public sources were fetched and baked into `data/enrichment.json` (162,210 bytes, 758 entries), and the 40 watchlist farm plans were researched from public sources (see REPORT.md):
+The graded run is deterministic and offline — it reads only the snapshot and the static files in this repo. At build time (2026-11-15) extra public sources were fetched and baked into `data/enrichment.json` (120,982 bytes, 758 entries — minified JSON, same content), and the 40 watchlist farm plans were researched from public sources (see REPORT.md):
 
 - **DefiLlama Fees API** — fees for 444 of 758 protocols (108 of 198 board rows, 26 of 40 watchlist). A second fundamentals signal beside TVL; shown per row as fees 30d / 7d / all-time.
 - **CoinGecko public API** — 42 protocols checked (40 watchlist + 2); a round-2 re-check verified **6 native tokens live: MEZO, TAO, PLUME, XDP, B2, USDD** (stablecoin product token only). INFI not verified — TGE targeted Q4 2026.
