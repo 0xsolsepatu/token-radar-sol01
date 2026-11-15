@@ -1,0 +1,8647 @@
+{
+ "meta": {
+  "fetched_at": "2026-11-15",
+  "snapshot_as_of": "2026-11-14",
+  "sources": {
+   "cryptorank": {
+    "what": "fundraising totals, rounds, token status, watchlist counts from public /ico/ project pages",
+    "fetched": "2026-11-15",
+    "coverage_watchlist": "3 of 40 with a fundraising page (Gauntlet, Polymarket, Saturn); Steakhouse checked — fund/price pages only, no fundraising page; other 37 not fetched (time-boxed)",
+    "url_pattern": "cryptorank.io/ico/<slug>"
+   },
+   "rootdata": {
+    "what": "fundraising database (rounds, amounts, investors, valuations)",
+    "fetched": "2026-11-15",
+    "coverage_watchlist": "0 of 40 — blocked: site returns a bot safety-check page to automated fetches and its API needs a key; no account created",
+    "url_pattern": "rootdata.com/Projects/detail/<name>"
+   },
+   "coingecko": {
+    "what": "public search API v3 (no key): whether a native token is listed",
+    "fetched": "2026-11-15",
+    "coverage_watchlist": "42 of 40 watchlist checked at build (+ Sentora Curator, rank 2); round 2 re-check 2026-11-15 verified 6 native tokens live: MEZO, TAO, PLUME, XDP, B2, USDD (stablecoin product token only); INFI not verified — TGE targeted Q4 2026, not yet trading",
+    "url_pattern": "api.coingecko.com/api/v3/search"
+   },
+   "defillama_fees": {
+    "what": "public Fees API overview: 30d / 7d / all-time fees per protocol",
+    "fetched": "2026-11-15",
+    "coverage_watchlist": "see per-slug fees; board coverage computed at build time",
+    "url_pattern": "api.llama.fi/overview/fees"
+   },
+   "token_terminal_artemis": {
+    "what": "public per-token metrics pages (no key): Morpho vault-token pages found via search — Token Terminal tracks vault shares, not the protocols themselves",
+    "fetched": "2026-11-15",
+    "coverage_watchlist": "2 of 40 with a public Token Terminal vault-token page (Saturn satUSDC, Keyrock kUSDC); Artemis project data still sits behind login and was not fetched",
+    "url_pattern": "tokenterminal.com/explorer/projects/morpho/<token>/metrics/all"
+   },
+   "quest_platforms": {
+    "what": "Galxe / Zealy / Layer3 quest programs for farm steps",
+    "fetched": "2026-11-15",
+    "coverage_watchlist": "not verified in the time box; no quest is claimed anywhere in the farm plans",
+    "url_pattern": "galxe.com / zealy.io / layer3.xyz"
+   },
+   "farm_plans": {
+    "what": "per-protocol farm steps for the 40 watchlist rows, researched from public sources only (project docs/blogs, official points pages, public vault pages); each row cites its URL in the board",
+    "fetched": "2026-11-15",
+    "coverage_watchlist": "40 of 40 with a protocol-specific plan: 12 with a live points program and no token, 6 with a token already trading (MEZO, TAO, PLUME, XDP, B2, USDD — Plume and Doppler also run live points programs), 22 yield-only; the 158 early rows keep the template plan",
+    "url_pattern": "per-row, see board farm_program.source"
+   }
+  }
+ },
+ "protocols": {
+  "3f": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1848,
+    "fees_7d_usd": 58,
+    "fees_all_time_usd": 19151
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "3jane-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 56485,
+    "fees_7d_usd": 15177,
+    "fees_all_time_usd": 449821
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "9summits": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 590627
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aave-horizon-rwa": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aave-v1": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aave-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 153822,
+    "fees_7d_usd": 34655,
+    "fees_all_time_usd": 460941295
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aave-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 39601113,
+    "fees_7d_usd": 10995634,
+    "fees_all_time_usd": 1886140059
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aave-v4": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1709460,
+    "fees_7d_usd": 541902,
+    "fees_all_time_usd": 4092892
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "abstract": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 32865,
+    "fees_7d_usd": 4038,
+    "fees_all_time_usd": 6501711
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "across": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 101138,
+    "fees_7d_usd": 17794,
+    "fees_all_time_usd": 18976062
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "acryptos": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "adi-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "adrastea-validator": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aegis-yusd": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 174726,
+    "fees_7d_usd": 31731,
+    "fees_all_time_usd": 2474436
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aera-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": -28,
+    "fees_7d_usd": -6,
+    "fees_all_time_usd": 291207
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aera-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 462803,
+    "fees_7d_usd": 91117,
+    "fees_all_time_usd": 5000279
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aero-basic": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 332137,
+    "fees_7d_usd": 104965,
+    "fees_all_time_usd": 332137
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aero-slipstream": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 6185607,
+    "fees_7d_usd": 2177407,
+    "fees_all_time_usd": 6207596
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aerodrome-ignition": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aerodrome-slipstream": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2686698,
+    "fees_7d_usd": 181970,
+    "fees_all_time_usd": 337290950
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aerodrome-v1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 475564,
+    "fees_7d_usd": 69986,
+    "fees_all_time_usd": 224682545
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aevo-perps": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aftermath-aflp": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "agni-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 40046,
+    "fees_7d_usd": 11107,
+    "fees_all_time_usd": 6273600
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "agua": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ailayer-farm": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "alchemix-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 156984,
+    "fees_7d_usd": 30258,
+    "fees_all_time_usd": 2159688
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "alpaca-finance-2.0": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "alpaca-leveraged-yield-farming": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "alphagrowth": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 7261,
+    "fees_7d_usd": 1660,
+    "fees_all_time_usd": 101585
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "anemoy-capital": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ankr": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 70643,
+    "fees_7d_usd": 7745,
+    "fees_all_time_usd": 11075298
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "antarctic": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 3657018,
+    "fees_7d_usd": 1253955,
+    "fees_all_time_usd": 42729746
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "anthias-labs": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "anvil": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ao-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "apeswap-amm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 3208,
+    "fees_7d_usd": 799,
+    "fees_all_time_usd": 37120501
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "apex-omni": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 326641,
+    "fees_7d_usd": 116691,
+    "fees_all_time_usd": 30006264
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "api3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 159392,
+    "fees_7d_usd": 19553,
+    "fees_all_time_usd": 1057540
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aquarius-stellar": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 82941,
+    "fees_7d_usd": 22239,
+    "fees_all_time_usd": 1441093
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "arbitrum-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "arbitrum-nova-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "arcadia-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 51479,
+    "fees_7d_usd": 15204,
+    "fees_all_time_usd": 1152710
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "arcus-perps": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1858359,
+    "fees_7d_usd": 439009,
+    "fees_all_time_usd": 4032074
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "armitage-by-wintermute": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 495991,
+    "fees_7d_usd": 98716,
+    "fees_all_time_usd": 2096986
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "arrakis-modular": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 331268,
+    "fees_7d_usd": 60539,
+    "fees_all_time_usd": 5708849
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "astar-dapps-staking": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aster-asbnb": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aster-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aster-usdf": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "august-digital": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "aura": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 38334262
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "autofarm": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "autofinance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 110511,
+    "fees_7d_usd": 20505,
+    "fees_all_time_usd": 5959191
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "avalanche-core-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "avalon-cedefi": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "avalon-superearn": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "avant-aveth": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 86977,
+    "fees_7d_usd": 18933,
+    "fees_all_time_usd": 768350
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "avant-avusd": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 630980,
+    "fees_7d_usd": 131573,
+    "fees_all_time_usd": 16334549
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "axelar": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1805,
+    "fees_7d_usd": 402,
+    "fees_all_time_usd": 257865
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "axis": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "search returned Axis USD (USDX stablecoin), Axis Robotics, Axis MAXIS — none verified as the protocol native token"
+   },
+   "cryptorank": null
+  },
+  "azverse-perps": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 3281034,
+    "fees_7d_usd": 1406847,
+    "fees_all_time_usd": 10500085
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "b14g": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 58216,
+    "fees_7d_usd": 11151,
+    "fees_all_time_usd": 2023918
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "search returned dualCORE / dualBTC Principal product tokens only"
+   },
+   "cryptorank": null
+  },
+  "b2-buzz": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "babylon-protocol": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "backpack": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "badger-dao": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2024,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 135815
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "balancer-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 39763,
+    "fees_7d_usd": 6256,
+    "fees_all_time_usd": 124188754
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "balancer-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 27411,
+    "fees_7d_usd": 2993,
+    "fees_all_time_usd": 10201635
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bancor-v2.1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 12783,
+    "fees_7d_usd": 2951,
+    "fees_all_time_usd": 60353397
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bancor-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 12013,
+    "fees_7d_usd": 2497,
+    "fees_all_time_usd": 4615190
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "base-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bdex-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 162801,
+    "fees_7d_usd": 41409,
+    "fees_all_time_usd": 1203191
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bedrock-unibtc": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1013,
+    "fees_7d_usd": 25,
+    "fees_all_time_usd": 30981
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bedrock-unieth": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 51376,
+    "fees_7d_usd": 9008,
+    "fees_all_time_usd": 1678358
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "beefy": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 77426,
+    "fees_7d_usd": 15805,
+    "fees_all_time_usd": 8377353
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "belt-finance": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bend": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 11795,
+    "fees_7d_usd": 2069,
+    "fees_all_time_usd": 203143
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "benqi-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 214779,
+    "fees_7d_usd": 60649,
+    "fees_all_time_usd": 18352769
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "benqi-staked-avax": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 896175,
+    "fees_7d_usd": 263414,
+    "fees_all_time_usd": 56846667
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "biconomy.com": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bifi": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bifrost-liquid-staking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 6690,
+    "fees_7d_usd": 2396,
+    "fees_all_time_usd": 16747656
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bigone": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bima-cdp": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "binance-bitcoin": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "binance-cex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "binance-staked-eth": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 19257182,
+    "fees_7d_usd": 3981297,
+    "fees_all_time_usd": 577580019
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "binance-staked-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 4247337,
+    "fees_7d_usd": 809811,
+    "fees_all_time_usd": 177649307
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "binaryx-platform": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 38119,
+    "fees_7d_usd": 3106,
+    "fees_all_time_usd": 1113238
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bingx": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "biquid": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bisonfi": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitfi-basis": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 353,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 11449
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitfinex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitget": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitget-bgbtc": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitget-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 129072,
+    "fees_7d_usd": 29946,
+    "fees_all_time_usd": 2175574
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitkan": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitkub": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitlayer-ybtc-family": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitlo": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitrue": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitstamp": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bittensor-dtao": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": {
+     "id": "bittensor",
+     "name": "Bittensor",
+     "symbol": "TAO",
+     "note": "Bittensor network token (CoinGecko rank 39); the row is the dTAO subsystem, not a separate token"
+    },
+    "note": "TAO verified live 2026-11-15 via CoinGecko search API (id bittensor, rank 39)"
+   },
+   "cryptorank": null
+  },
+  "bitunix": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitvavo": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitvenus": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bitway-earn": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 143472,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 3348897
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "blazestake": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 322297,
+    "fees_7d_usd": 59585,
+    "fees_all_time_usd": 24049081
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "blend-pools-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 233178,
+    "fees_7d_usd": 45919,
+    "fees_all_time_usd": 5038553
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "block-analitica": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 4025018
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "blofin": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bluefin-spot": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 103627,
+    "fees_7d_usd": 19831,
+    "fees_all_time_usd": 29257872
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "blur-bids": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 11,
+    "fees_7d_usd": 6,
+    "fees_all_time_usd": 70820766
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bonk-staked-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 28204,
+    "fees_7d_usd": 4986,
+    "fees_all_time_usd": 3567166
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "boros": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 60165,
+    "fees_7d_usd": 14380,
+    "fees_all_time_usd": 868278
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bouncebit-prime": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "brickken": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "btcfi-cdp": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bucket-cdp": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 4581283
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bucket-protocol-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 40136,
+    "fees_7d_usd": 1365,
+    "fees_all_time_usd": 780920
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bulbaswap-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 8484,
+    "fees_7d_usd": 2208,
+    "fees_all_time_usd": 242316
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bulk": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 495351,
+    "fees_7d_usd": 128746,
+    "fees_all_time_usd": 894879
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "buzz-farming": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bybit": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bybit-staked-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 553652,
+    "fees_7d_usd": 110804,
+    "fees_all_time_usd": 27959597
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "bydfi": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "byreal": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 103518,
+    "fees_7d_usd": 4473,
+    "fees_all_time_usd": 5376156
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "byte-exchange": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "cap": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 443882,
+    "fees_7d_usd": 132098,
+    "fees_all_time_usd": 8714376
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "catfee-staking-vault": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "cbridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ccip": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "cetus-clmm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 353040,
+    "fees_7d_usd": 79455,
+    "fees_all_time_usd": 102715168
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "chain-fusion": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "chainflip-amm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 3123438,
+    "fees_7d_usd": 764420,
+    "fees_all_time_usd": 27624512
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "chamber-vaults": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 46970,
+    "fees_7d_usd": 10428,
+    "fees_all_time_usd": 1971666
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "chiliz-governance-staking": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "chutes": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 3693238
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "cian-yield-layer": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 767773,
+    "fees_7d_usd": 198732,
+    "fees_all_time_usd": 7570298
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "circle-bitcoin": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "circle-gateway": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 17855,
+    "fees_7d_usd": 3926,
+    "fees_all_time_usd": 359692
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "citrea-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "clearpool-tpool": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 30538,
+    "fees_7d_usd": 5839,
+    "fees_all_time_usd": 1433589
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "clearstar": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 453187,
+    "fees_7d_usd": 100736,
+    "fees_all_time_usd": 3187080
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "coin8": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "coinbase-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "coinbase-wrapped-staked-eth": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2373878,
+    "fees_7d_usd": 466389,
+    "fees_all_time_usd": 65589993
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "coindcx": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "coinstore": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "communityv3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 616023,
+    "fees_7d_usd": 190869,
+    "fees_all_time_usd": 637010
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "compound-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 135728,
+    "fees_7d_usd": 33705,
+    "fees_all_time_usd": 522494871
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "compound-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2540274,
+    "fees_7d_usd": 550822,
+    "fees_all_time_usd": 57006415
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "concentrator": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 7773,
+    "fees_7d_usd": 1512,
+    "fees_all_time_usd": 600129
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "concrete": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 947825,
+    "fees_7d_usd": 99357,
+    "fees_all_time_usd": 34371174
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "connext": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "contango-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 887,
+    "fees_7d_usd": 160,
+    "fees_all_time_usd": 1347462
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "convex-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1840534,
+    "fees_7d_usd": 427833,
+    "fees_all_time_usd": 1058327826
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "cooler-loans": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 53905,
+    "fees_7d_usd": 14713,
+    "fees_all_time_usd": 835810
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "cronos-zkevm-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "crvusd": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 242894,
+    "fees_7d_usd": 70452,
+    "fees_all_time_usd": 40905649
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "crypto-com": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "crypto.com-liquid-staking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 49976,
+    "fees_7d_usd": 9375,
+    "fees_all_time_usd": 6113446
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "current": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 263181,
+    "fees_7d_usd": 74492,
+    "fees_all_time_usd": 934042
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "curvance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 414831,
+    "fees_7d_usd": 106615,
+    "fees_all_time_usd": 2963942
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "search returned a CVE listing; not verified as the protocol native token"
+   },
+   "cryptorank": null
+  },
+  "curve-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 6103218,
+    "fees_7d_usd": 1120538,
+    "fees_all_time_usd": 689374538
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "curve-llamalend": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 4951,
+    "fees_7d_usd": 1524,
+    "fees_all_time_usd": 1751021
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "curve-llamalend-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 109686,
+    "fees_7d_usd": 27788,
+    "fees_all_time_usd": 265419
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "cvault-finance": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "d2-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 77252,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 3510017
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "damm-capital": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "decibel": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 473918,
+    "fees_7d_usd": 96787,
+    "fees_all_time_usd": 3849235
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "deepbook-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 77041,
+    "fees_7d_usd": 25873,
+    "fees_all_time_usd": 348964
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "defa-by-invoicemate": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "defi-saver-asset-management": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 560418,
+    "fees_7d_usd": 349335,
+    "fees_all_time_usd": 21580670
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "defindex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "definity-staked-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 114457,
+    "fees_7d_usd": 21363,
+    "fees_all_time_usd": 2656471
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "deri-v4": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "deribit": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "derive-v3-options": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 457163,
+    "fees_7d_usd": 158068,
+    "fees_all_time_usd": 604647
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "dexalot-portfolio": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "dfdv-staked-sol": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "dodo-amm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 210572,
+    "fees_7d_usd": 82336,
+    "fees_all_time_usd": 63045449
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "dolomite": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1715734,
+    "fees_7d_usd": 391545,
+    "fees_all_time_usd": 21404321
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "doppler-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 238867,
+    "fees_7d_usd": 48029,
+    "fees_all_time_usd": 3675970
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": {
+     "id": "doppler-finance",
+     "name": "Doppler Finance",
+     "symbol": "XDP",
+     "note": "Doppler Finance token (CoinGecko rank 827); staking live since 16 Oct 2026"
+    },
+    "note": "XDP verified live 2026-11-15 via CoinGecko search API (id doppler-finance, rank 827)"
+   },
+   "cryptorank": null
+  },
+  "drakewell": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "drift-staked-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1064910,
+    "fees_7d_usd": 195361,
+    "fees_all_time_usd": 28629804
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "dxsale": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "dydx-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 34434573
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "dydx-v4": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 231979,
+    "fees_7d_usd": 51872,
+    "fees_all_time_usd": 64573531
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "echo-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "edgex-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "eigencloud": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 202511,
+    "fees_7d_usd": 20667,
+    "fees_all_time_usd": 162639015
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ekubo": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 265075,
+    "fees_7d_usd": 51279,
+    "fees_all_time_usd": 10184202
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ember": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 857598,
+    "fees_7d_usd": 282232,
+    "fees_all_time_usd": 6686842
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "search returned Ember vault/earn product tokens only"
+   },
+   "cryptorank": null
+  },
+  "endur": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "endurance-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "enzyme-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 7494,
+    "fees_7d_usd": 4234,
+    "fees_all_time_usd": 113760
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "equilibria": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 6838471
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "estate-protocol": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ethena-usde": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 18347657,
+    "fees_7d_usd": 5231564,
+    "fees_all_time_usd": 1083826481
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ethena-usdtb": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ether.fi-liquid": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 45887,
+    "fees_7d_usd": 16396,
+    "fees_all_time_usd": 19450802
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ether.fi-stake": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 10240093,
+    "fees_7d_usd": 2288524,
+    "fees_all_time_usd": 388472927
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "etherfi-borrowing-market": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 51326,
+    "fees_7d_usd": 36877,
+    "fees_all_time_usd": 776979
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "etherfi-cash-liquid": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 3771238,
+    "fees_7d_usd": 926143,
+    "fees_all_time_usd": 42249637
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "euler-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 536716,
+    "fees_7d_usd": 119813,
+    "fees_all_time_usd": 87924607
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "evaa-protocol": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "exactly": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 86115,
+    "fees_7d_usd": 20018,
+    "fees_all_time_usd": 370993
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "exinpool": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "exponent-risk-tranching": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "exponent-strategy-vaults": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "exponent-yield-exchange": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 25357,
+    "fees_7d_usd": 10972,
+    "fees_all_time_usd": 3721253
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "exsat-staking-btc": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "extended-perps": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1454322,
+    "fees_7d_usd": 269517,
+    "fees_all_time_usd": 36188597
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "extra-finance-leverage-farming": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 14432,
+    "fees_7d_usd": 118,
+    "fees_all_time_usd": 8791232
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "fables": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1461717,
+    "fees_7d_usd": 166530,
+    "fees_all_time_usd": 7559746
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "falcon-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 148380,
+    "fees_7d_usd": 26243,
+    "fees_all_time_usd": 8042332
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "fassets": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "felix-cdp": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 36755,
+    "fees_7d_usd": 10744,
+    "fees_all_time_usd": 6686163
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "felix-vaults": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 57750,
+    "fees_7d_usd": 10043,
+    "fees_all_time_usd": 8927007
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "figure-markets-exchange": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2012,
+    "fees_7d_usd": 644,
+    "fees_all_time_usd": 173564
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "figure-markets-prime": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "fira": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 35167,
+    "fees_7d_usd": 7297,
+    "fees_all_time_usd": 344075
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "firelight": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "search returned a staked-XRP product token only"
+   },
+   "cryptorank": null
+  },
+  "flokifi-locker": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "flowdesk": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "fluid-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 355107,
+    "fees_7d_usd": 92822,
+    "fees_all_time_usd": 31534558
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "fluid-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2681275,
+    "fees_7d_usd": 581647,
+    "fees_all_time_usd": 111034077
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "fluid-lite": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 200166,
+    "fees_7d_usd": 33507,
+    "fees_all_time_usd": 8061004
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "flux-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 155398,
+    "fees_7d_usd": 51683,
+    "fees_all_time_usd": 3478672
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "fluxion-network": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 197582,
+    "fees_7d_usd": 13181,
+    "fees_all_time_usd": 1649355
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "flying-tulip-ftusd": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2286,
+    "fees_7d_usd": 405,
+    "fees_all_time_usd": 15764
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "flying-tulip-lend": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 19148,
+    "fees_7d_usd": 3817,
+    "fees_all_time_usd": 56730
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "folks-finance-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 40784,
+    "fees_7d_usd": 8243,
+    "fees_all_time_usd": 131891
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "forward-industries-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1118143,
+    "fees_7d_usd": 230612,
+    "fees_all_time_usd": 8991888
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "frankencoin": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 137283,
+    "fees_7d_usd": 21620,
+    "fees_all_time_usd": 1962460
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "frax": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 22369,
+    "fees_7d_usd": 8619,
+    "fees_all_time_usd": 5662609
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "frax-ether": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 221337,
+    "fees_7d_usd": 47451,
+    "fees_all_time_usd": 46407575
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "frax-swap": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 10009,
+    "fees_7d_usd": 2832,
+    "fees_all_time_usd": 10641477
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "frax-usd": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 307911,
+    "fees_7d_usd": 69406,
+    "fees_all_time_usd": 4557574
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "fraxlend": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 124285,
+    "fees_7d_usd": 31601,
+    "fees_all_time_usd": 3958755
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "fraxtal": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 90,
+    "fees_7d_usd": 25,
+    "fees_all_time_usd": 25818
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "fstswap": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "fuel-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "function-fbtc": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "futarchy-amm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 99042,
+    "fees_7d_usd": 29804,
+    "fees_all_time_usd": 3437484
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "fx-protocol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1845482,
+    "fees_7d_usd": 687118,
+    "fees_all_time_usd": 17058052
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "gain": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "gains-network": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 167935,
+    "fees_7d_usd": 15995,
+    "fees_all_time_usd": 63032134
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "galaxy-curation": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 316273,
+    "fees_7d_usd": 75962,
+    "fees_all_time_usd": 1455156
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "gami-labs": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "gamma-research": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "gate": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "gate-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 255049,
+    "fees_7d_usd": 47429,
+    "fees_all_time_usd": 4180488
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "gate-us": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "gauntlet": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko",
+    "cryptorank"
+   ],
+   "fees": {
+    "fees_30d_usd": 4119540,
+    "fees_7d_usd": 928724,
+    "fees_all_time_usd": 63426517
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "vault products only: GTUSDA, GTUSDTB, GTUSDCP"
+   },
+   "cryptorank": {
+    "url": "http://cryptorank.io/ico/gauntlet-network",
+    "token_status": "No Token",
+    "watchlists": 255,
+    "total_raised_usd": 169630000,
+    "total_raised_verified": true,
+    "verification_note": "CryptoRank $169.63M cross-checks DefiLlama $169.49M (protocol page, 2026-11-15)",
+    "rounds": [
+     {
+      "stage": "Series C",
+      "date": "2026-07-09",
+      "raised_usd": null,
+      "note": "per-round amount gated behind a free account; not fetched"
+     }
+    ],
+    "investors_note": "investor list gated behind a free account; not fetched"
+   }
+  },
+  "gearbox": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 3884,
+    "fees_7d_usd": 950,
+    "fees_all_time_usd": 22794681
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "gemini": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "geth": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 65485,
+    "fees_7d_usd": 13767,
+    "fees_all_time_usd": 3818804
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "glif": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 112375,
+    "fees_7d_usd": 25339,
+    "fees_all_time_usd": 1873186
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "gmx-evm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1424602,
+    "fees_7d_usd": 430290,
+    "fees_all_time_usd": 165845377
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "gmx-solana": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2883718,
+    "fees_7d_usd": 525004,
+    "fees_all_time_usd": 26285166
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "goldfinger": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "goonfi": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "goose": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "goplus-locker-v3": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "granite": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "gravity-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "grove-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 4543323,
+    "fees_7d_usd": 898774,
+    "fees_all_time_usd": 71906488
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "growihf": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "grvt-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "gtbtc": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 29629,
+    "fees_7d_usd": 6334,
+    "fees_all_time_usd": 856845
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "haedal-lending-vault": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2494,
+    "fees_7d_usd": 569,
+    "fees_all_time_usd": 3974
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "haedal-protocol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 36733,
+    "fees_7d_usd": 7175,
+    "fees_all_time_usd": 2180661
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hakutora": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 62218,
+    "fees_7d_usd": 13231,
+    "fees_all_time_usd": 2685446
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "harmonix-finance": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "harvest-finance": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hashkey-exchange": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hashkey-global": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hatom-lending": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hegic": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": -5483,
+    "fees_7d_usd": -32520,
+    "fees_all_time_usd": 3385527
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "helius-staked-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 366960,
+    "fees_7d_usd": 68675,
+    "fees_all_time_usd": 11297485
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hertzflow": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2407,
+    "fees_7d_usd": 368,
+    "fees_all_time_usd": 52741
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hibt": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hipo": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 140914,
+    "fees_7d_usd": 32188,
+    "fees_all_time_usd": 940677
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hive-protocol": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": {
+     "id": "bsquared-network",
+     "name": "BSquared Network",
+     "symbol": "B2",
+     "note": "BSquared Network token (CoinGecko rank 843); the row is Hive, the BTC-staking product on B²"
+    },
+    "note": "B2 verified live 2026-11-15 via CoinGecko search API (id bsquared-network, rank 843)"
+   },
+   "cryptorank": null
+  },
+  "hotcoin": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "htx": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hubra-staked-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2335,
+    "fees_7d_usd": 471,
+    "fees_all_time_usd": 109991
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "huma": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2823605,
+    "fees_7d_usd": 689826,
+    "fees_all_time_usd": 20739523
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hydration-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 91350,
+    "fees_7d_usd": 35967,
+    "fees_all_time_usd": 3346780
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hydration-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 59730,
+    "fees_7d_usd": 19738,
+    "fees_all_time_usd": 2377200
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hydro-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 4760,
+    "fees_7d_usd": 1351,
+    "fees_all_time_usd": 20702
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hydro-lst": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hylo-lsts": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 79118,
+    "fees_7d_usd": 14366,
+    "fees_all_time_usd": 1625135
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hylo-protocol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 329930,
+    "fees_7d_usd": 77473,
+    "fees_all_time_usd": 5325060
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hyperbeat-earn": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 43262,
+    "fees_7d_usd": 8695,
+    "fees_all_time_usd": 4519289
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hyperbeat-lst": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 21028,
+    "fees_7d_usd": 4643,
+    "fees_all_time_usd": 609790
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hyperithm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 465062,
+    "fees_7d_usd": 100088,
+    "fees_all_time_usd": 8085483
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "Midas Hyperithm product tokens only"
+   },
+   "cryptorank": null
+  },
+  "hyperlane": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 50518,
+    "fees_7d_usd": 6443,
+    "fees_all_time_usd": 1722680
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hyperlend-pooled": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 523299,
+    "fees_7d_usd": 167326,
+    "fees_all_time_usd": 14213872
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hyperliquid-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hyperliquid-earn": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hyperliquid-hlp": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 542573,
+    "fees_7d_usd": 148040,
+    "fees_all_time_usd": 23975985
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hyperliquid-spot-orderbook": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2732583,
+    "fees_7d_usd": 764783,
+    "fees_all_time_usd": 70263429
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hyperswap-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 22847,
+    "fees_7d_usd": 2376,
+    "fees_all_time_usd": 1246921
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "hyperswap-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 208714,
+    "fees_7d_usd": 43244,
+    "fees_all_time_usd": 15892453
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "icarus-cl": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ichi": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "idex-v1": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "immutable-zkevm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 425,
+    "fees_7d_usd": 34,
+    "fees_all_time_usd": 349971
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "inceptionlrt-(isolated-restaking)": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "index-coop": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 23807,
+    "fees_7d_usd": 4723,
+    "fees_all_time_usd": 416716
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "indodax": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "infinifi": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 427515,
+    "fees_7d_usd": 104306,
+    "fees_all_time_usd": 9479780
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "search returned iUSD stablecoin, INFI token, locked-iUSD products; INFI not verified as native"
+   },
+   "cryptorank": null
+  },
+  "infrared-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 11470,
+    "fees_7d_usd": 2165,
+    "fees_all_time_usd": 8489963
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ink-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "inverse-finance-firm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 263716,
+    "fees_7d_usd": 57737,
+    "fees_all_time_usd": 13225575
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ipor-fusion": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 334942,
+    "fees_7d_usd": 48246,
+    "fees_all_time_usd": 2474352
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "jagpool-staked-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 274660,
+    "fees_7d_usd": 51357,
+    "fees_all_time_usd": 8550992
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "japan-staked-sol": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "jito-liquid-staking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 3789735,
+    "fees_7d_usd": 685059,
+    "fees_all_time_usd": 357189378
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "jito-restaking": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "joe-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 21343,
+    "fees_7d_usd": 6839,
+    "fees_all_time_usd": 252188147
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "jpool": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 459489,
+    "fees_7d_usd": 87904,
+    "fees_all_time_usd": 19281415
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "juicebox-v1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 914,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 542790
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "jupiter-lend": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 4376871,
+    "fees_7d_usd": 774083,
+    "fees_all_time_usd": 43044231
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "jupiter-lend-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 5357,
+    "fees_7d_usd": 1228,
+    "fees_all_time_usd": 19935
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "jupiter-perpetual-exchange": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 9579720,
+    "fees_7d_usd": 3716145,
+    "fees_all_time_usd": 836645438
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "jupiter-staked-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2141077,
+    "fees_7d_usd": 357145,
+    "fees_all_time_usd": 114278521
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "jupusd": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 90593,
+    "fees_7d_usd": 14778,
+    "fees_all_time_usd": 1245688
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "justcryptos": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "justlend-strx": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "justlend-v1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2306797,
+    "fees_7d_usd": 1210832,
+    "fees_all_time_usd": 25618825
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "k3-capital": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 487247,
+    "fees_7d_usd": 44758,
+    "fees_all_time_usd": 12240220
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "search returned an sBOLD vault product token only"
+   },
+   "cryptorank": null
+  },
+  "kaio": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 36490,
+    "fees_7d_usd": 9504,
+    "fees_all_time_usd": 233699
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kamino-lend": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 4223497,
+    "fees_7d_usd": 923561,
+    "fees_all_time_usd": 220267790
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kamino-liquidity": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 303914,
+    "fees_7d_usd": 29187,
+    "fees_all_time_usd": 38593190
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "katana-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 21376,
+    "fees_7d_usd": 5957,
+    "fees_all_time_usd": 3152238
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "katana-pre-launch": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kava-lend": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kava-mint": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kelp": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2020452,
+    "fees_7d_usd": 375414,
+    "fees_all_time_usd": 89037093
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "keyrock": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko",
+    "tokenterminal"
+   ],
+   "fees": {
+    "fees_30d_usd": 182817,
+    "fees_7d_usd": 47170,
+    "fees_all_time_usd": 310196
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null,
+   "tokenterminal": {
+    "url": "https://TOKENTERMINAL.COM/explorer/projects/morpho/kusdcc145/metrics/all",
+    "note": "Keyrock USDC (Ethereum 0x0442...c145) Morpho vault share kUSDC, launched 2025-10-03 (Token Terminal, updated 2026-11-12)"
+   }
+  },
+  "kinetic": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 81721,
+    "fees_7d_usd": 14796,
+    "fees_all_time_usd": 1518603
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kinetiq-earn": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 67298,
+    "fees_7d_usd": 14255,
+    "fees_all_time_usd": 8604364
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kinetiq-elysium-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kinetiq-khype": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1408308,
+    "fees_7d_usd": 289849,
+    "fees_all_time_usd": 30637940
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kinetiq-kmhype": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kodiak-islands": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kodiak-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 33315,
+    "fees_7d_usd": 10405,
+    "fees_all_time_usd": 10820063
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "korbit": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kpk": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 238400,
+    "fees_7d_usd": 51992,
+    "fees_all_time_usd": 1652114
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kraken-bitcoin": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kton": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 27006,
+    "fees_7d_usd": 5393,
+    "fees_all_time_usd": 263001
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kucoin": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "kyros": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 47728,
+    "fees_7d_usd": 9713,
+    "fees_all_time_usd": 2047243
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lagoon": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 97337,
+    "fees_7d_usd": 20561,
+    "fees_all_time_usd": 3414016
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "layerbank": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "layerzero-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 408702,
+    "fees_7d_usd": 88429,
+    "fees_all_time_usd": 12853438
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lbank": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "levex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lido": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 54982703,
+    "fees_7d_usd": 9664505,
+    "fees_all_time_usd": 3445049165
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lighter-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lighter-llp": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lighter-robinhood-perps": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2212731,
+    "fees_7d_usd": 528730,
+    "fees_all_time_usd": 5899200
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lightning-network": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "liminal-basis": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "linea-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "linear-protocol": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "liquid-collective": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1537932,
+    "fees_7d_usd": 276252,
+    "fees_all_time_usd": 45102860
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "liquity-v1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 264128,
+    "fees_7d_usd": 17027,
+    "fees_all_time_usd": 85107822
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "liquity-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 775192,
+    "fees_7d_usd": 49206,
+    "fees_all_time_usd": 3880722
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "liqwid": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 67160,
+    "fees_7d_usd": 16370,
+    "fees_all_time_usd": 1334182
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lista-cdp": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 239584,
+    "fees_7d_usd": 63604,
+    "fees_all_time_usd": 12108925
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lista-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 5264,
+    "fees_7d_usd": 3167,
+    "fees_all_time_usd": 62936
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lista-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 495320,
+    "fees_7d_usd": 133827,
+    "fees_all_time_usd": 14002712
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lista-liquid-staking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 386607,
+    "fees_7d_usd": 87556,
+    "fees_all_time_usd": 13933577
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lofty": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "lombard-btc.b": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lombard-lbtc": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 414064,
+    "fees_7d_usd": 136791,
+    "fees_all_time_usd": 4917465
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lombard-vaults": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 105331,
+    "fees_7d_usd": 27023,
+    "fees_all_time_usd": 3913448
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "looped-hype": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 8732,
+    "fees_7d_usd": 1272,
+    "fees_all_time_usd": 978169
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "loopscale-curation": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "loopscale-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 246218,
+    "fees_7d_usd": 45618,
+    "fees_all_time_usd": 1750646
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lorenzo-enzobtc": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lorenzo-susd1+": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 18294,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 3117772
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "lulo": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 104626,
+    "fees_7d_usd": 16535,
+    "fees_all_time_usd": 1868205
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "m0": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 579532,
+    "fees_7d_usd": 157183,
+    "fees_all_time_usd": 22978364
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "makina": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 243126,
+    "fees_7d_usd": 64248,
+    "fees_all_time_usd": 2620164
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "manifest-trade": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 21063,
+    "fees_7d_usd": 9664,
+    "fees_all_time_usd": 21063
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mansory": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "manta-cedefi": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "manta-pacific": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mantle-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mantle-restaking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 179438,
+    "fees_7d_usd": 34183,
+    "fees_all_time_usd": 27346502
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "maple": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 9751196,
+    "fees_7d_usd": 1601783,
+    "fees_all_time_usd": 216550105
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "marginfi-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 138800,
+    "fees_7d_usd": 26489,
+    "fees_all_time_usd": 312191
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "marginfi-lst": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 34985,
+    "fees_7d_usd": 6376,
+    "fees_all_time_usd": 1158165
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "marinade-liquid-staking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 977284,
+    "fees_7d_usd": 196148,
+    "fees_all_time_usd": 143709772
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "marinade-native": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1588346,
+    "fees_7d_usd": 311657,
+    "fees_all_time_usd": 110616703
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "marinade-select": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 647199,
+    "fees_7d_usd": 112116,
+    "fees_all_time_usd": 14063321
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mellow-core": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mellow-restaking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2390161,
+    "fees_7d_usd": 404323,
+    "fees_all_time_usd": 12482414
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mento-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 191,
+    "fees_7d_usd": 3,
+    "fees_all_time_usd": 31036
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "merchant-moe-liquidity-book": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 8809,
+    "fees_7d_usd": 1831,
+    "fees_all_time_usd": 7276471
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "merlins-seal": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "merlinswap": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "meta-pool-eth": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 8304,
+    "fees_7d_usd": 1603,
+    "fees_all_time_usd": 403020
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "meta-pool-near": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "metalx-lending": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "metalx-swap": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "meteora-damm-v1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 70381,
+    "fees_7d_usd": 12204,
+    "fees_all_time_usd": 108121116
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "meteora-damm-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 4088187,
+    "fees_7d_usd": 505747,
+    "fees_all_time_usd": 263715560
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "meteora-dlmm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 16658966,
+    "fees_7d_usd": 3769816,
+    "fees_all_time_usd": 1095609139
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "meteora-vaults": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "meth-protocol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1102421,
+    "fees_7d_usd": 197776,
+    "fees_all_time_usd": 93506644
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "metis-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "metric-v1": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "metronome-synth": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 46587,
+    "fees_7d_usd": 7589,
+    "fees_all_time_usd": 19941017
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mev-capital": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 19438,
+    "fees_7d_usd": 4198,
+    "fees_all_time_usd": 35404281
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mexc": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mezo-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mezo-earn": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": {
+     "id": "mezo",
+     "name": "MEZO",
+     "symbol": "MEZO",
+     "note": "Mezo network token (CoinGecko rank 2495); the row is the Mezo Earn product, whose Phase 1 airdrop (Jan 2026) is over"
+    },
+    "note": "MEZO verified live 2026-11-15 via CoinGecko search API (id mezo, rank 2495)"
+   },
+   "cryptorank": null
+  },
+  "mezzanine": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "minswap-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 178694,
+    "fees_7d_usd": 43894,
+    "fees_all_time_usd": 2202255
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "monarq": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "moneyonchain": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "monolith-market": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "moonwell-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 140264,
+    "fees_7d_usd": 57490,
+    "fees_all_time_usd": 24163882
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "moonwell-vaults": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 15659,
+    "fees_7d_usd": 3578,
+    "fees_all_time_usd": 3682379
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "morph-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "morpheusai": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 38268,
+    "fees_7d_usd": 5275,
+    "fees_all_time_usd": 9991159
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "morpho-blue": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 32781024,
+    "fees_7d_usd": 12046950,
+    "fees_all_time_usd": 402050290
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "morpho-midnight": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 644631,
+    "fees_7d_usd": 123460,
+    "fees_all_time_usd": 687144
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mstable-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 3768,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 39635
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "multichain": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mux-perps": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 7801,
+    "fees_7d_usd": 2172,
+    "fees_all_time_usd": 33255918
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "mystic-finance-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 14786,
+    "fees_7d_usd": 1953,
+    "fees_all_time_usd": 2603434
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "nado-spot": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 4432,
+    "fees_7d_usd": 1273,
+    "fees_all_time_usd": 60167
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "native-credit-pool": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 14913,
+    "fees_7d_usd": 3799,
+    "fees_all_time_usd": 747051
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "navi-curator": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "navi-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 404882,
+    "fees_7d_usd": 87013,
+    "fees_all_time_usd": 39403408
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "nbx": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "near-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "near-intents": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 6114137,
+    "fees_7d_usd": 1713947,
+    "fees_all_time_usd": 61211900
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "nemo-trading": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "neopin-staking": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "nest-cl": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 919243,
+    "fees_7d_usd": 219996,
+    "fees_all_time_usd": 4560928
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "neutral-trade": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 30661,
+    "fees_7d_usd": 20047,
+    "fees_all_time_usd": -1299
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "nexo": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "nexus-btc": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "nexus-mutual-insurance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 130408,
+    "fees_7d_usd": 29508,
+    "fees_all_time_usd": 17530195
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "niza": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "noble": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 453,
+    "fees_7d_usd": 56,
+    "fees_all_time_usd": 352407
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "search returned bridged USDC only; Noble is a Chain-category row, set aside"
+   },
+   "cryptorank": null
+  },
+  "nodedao": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 56573,
+    "fees_7d_usd": 11864,
+    "fees_all_time_usd": 3871428
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "nonce-capital": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "noon": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 261012,
+    "fees_7d_usd": 62325,
+    "fees_all_time_usd": 4492484
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "nucleus": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "nuva": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "obeliskbtc": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "obol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 60680,
+    "fees_7d_usd": 21373,
+    "fees_all_time_usd": 558411
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "okcoin": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "okx": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "okx-xbtc": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "onre": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 2466092,
+    "fees_7d_usd": 581118,
+    "fees_all_time_usd": 20170605
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "ONYC tokenized-reinsurance product token"
+   },
+   "cryptorank": null
+  },
+  "opentrade": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 12792,
+    "fees_7d_usd": 2293,
+    "fees_all_time_usd": 2152272
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "SPLUS vault product token"
+   },
+   "cryptorank": null
+  },
+  "optimism-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "orangex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "orbit-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "orca-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 5870497,
+    "fees_7d_usd": 1325869,
+    "fees_all_time_usd": 245686409
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "orderly-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "origami-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 14760,
+    "fees_7d_usd": 3877,
+    "fees_all_time_usd": 618219
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "origin-arm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 38090,
+    "fees_7d_usd": 9241,
+    "fees_all_time_usd": 454012
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "origin-dollar": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 32481,
+    "fees_7d_usd": 7557,
+    "fees_all_time_usd": 6275414
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "origin-ether": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 189401,
+    "fees_7d_usd": 38808,
+    "fees_all_time_usd": 20796766
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "osl-exchange": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "osmosis-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 176803,
+    "fees_7d_usd": 31448,
+    "fees_all_time_usd": 66678115
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ourbit": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pacifica-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "paimon": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pancakeswap-amm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2703310,
+    "fees_7d_usd": 527267,
+    "fees_all_time_usd": 939267102
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pancakeswap-amm-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 6644431,
+    "fees_7d_usd": 1564407,
+    "fees_all_time_usd": 498114921
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pancakeswap-infinity": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 744296,
+    "fees_7d_usd": 171676,
+    "fees_all_time_usd": 13934606
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pangolins": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "papertrade": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 25350155,
+    "fees_7d_usd": 4092066,
+    "fees_all_time_usd": 75076663
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "paradex-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pendle-loop": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pendle-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 479825,
+    "fees_7d_usd": 72135,
+    "fees_all_time_usd": 67520658
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "perena-vaults": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "phantom-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 602280,
+    "fees_7d_usd": 111089,
+    "fees_all_time_usd": 9777237
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pharaoh-dlmm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 361139,
+    "fees_7d_usd": 53479,
+    "fees_all_time_usd": 3473858
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pharaoh-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 934353,
+    "fees_7d_usd": 285635,
+    "fees_all_time_usd": 9447316
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "phase-delegation": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 392314,
+    "fees_7d_usd": 73702,
+    "fees_all_time_usd": 8016307
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "phemex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "phoenix-perp": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 226319,
+    "fees_7d_usd": 46807,
+    "fees_all_time_usd": 1251890
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "piku-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 25461,
+    "fees_7d_usd": 6623,
+    "fees_all_time_usd": 1270750
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pinksale": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 9758,
+    "fees_7d_usd": 183,
+    "fees_all_time_usd": 5460842
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pionex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "plasma-one": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "plasma-saving-vaults": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 105569,
+    "fees_7d_usd": 25000,
+    "fees_all_time_usd": 8267255
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "plume-vaults": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 1077962,
+    "fees_7d_usd": 247528,
+    "fees_all_time_usd": 5835233
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": {
+     "id": "plume",
+     "name": "Plume",
+     "symbol": "PLUME",
+     "note": "Plume network token (CoinGecko rank 274); the row is the Plume Vaults (Nest) product"
+    },
+    "note": "PLUME verified live 2026-11-15 via CoinGecko search API (id plume, rank 274)"
+   },
+   "cryptorank": null
+  },
+  "poloniex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "polygon-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "polygon-zkevm-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "polymarket-international": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko",
+    "cryptorank"
+   ],
+   "fees": {
+    "fees_30d_usd": 35691370,
+    "fees_7d_usd": 8558383,
+    "fees_all_time_usd": 284542548
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "unverified POLY listing; CryptoRank records Token Expected"
+   },
+   "cryptorank": {
+    "url": "https://cryptorank.io/ico/polymarket",
+    "token_status": "Token Expected, TGE: TBA",
+    "watchlists": 1116,
+    "total_raised_usd": 3870000000,
+    "total_raised_verified": false,
+    "verification_note": "as displayed by CryptoRank; per-round amounts are gated so the total cannot be reconciled against public rounds (known public rounds sum far lower) — shown as reported, NOT used as a model input",
+    "rounds": [
+     {
+      "stage": "Undisclosed",
+      "date": "2026-08-31",
+      "raised_usd": null,
+      "note": "per-round amount gated behind a free account; not fetched"
+     }
+    ],
+    "investors_note": "investor list gated behind a free account; not fetched"
+   }
+  },
+  "popdex-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "portal": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 15550,
+    "fees_7d_usd": 2383,
+    "fees_all_time_usd": 1004886
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "potatoswap-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 29747,
+    "fees_7d_usd": 6701,
+    "fees_all_time_usd": 3275936
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "predict-fun": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 7899977,
+    "fees_7d_usd": 1577165,
+    "fees_all_time_usd": 34987017
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "prime-staking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 86554,
+    "fees_7d_usd": 6001,
+    "fees_all_time_usd": 152715
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "privacy-pools-v1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 7280,
+    "fees_7d_usd": 545,
+    "fees_all_time_usd": 116530
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "probit-global": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "project-0": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 139655,
+    "fees_7d_usd": 26495,
+    "fees_all_time_usd": 406307
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "project-x": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1537200,
+    "fees_7d_usd": 384757,
+    "fees_all_time_usd": 44835696
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "proxy": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "puffer-stake": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 44208,
+    "fees_7d_usd": 12344,
+    "fees_all_time_usd": 36892491
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pulsechain-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pulsex-v1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 100761,
+    "fees_7d_usd": 13273,
+    "fees_all_time_usd": 25490020
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pulsex-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 96034,
+    "fees_7d_usd": 14441,
+    "fees_all_time_usd": 15187272
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pumpbtc": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "pumpswap": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 76507920,
+    "fees_7d_usd": 13287802,
+    "fees_all_time_usd": 1038870606
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "qearn": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "quickswap-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 204681,
+    "fees_7d_usd": 22083,
+    "fees_all_time_usd": 198166734
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "quickswap-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 38978,
+    "fees_7d_usd": 6867,
+    "fees_all_time_usd": 28968094
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "r25": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "radpie": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 4,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 517414
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "raiku-staked-sol": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "railgun": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 352088,
+    "fees_7d_usd": 107693,
+    "fees_all_time_usd": 14240276
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "rain": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 1511740
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ramses-cl-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 790308,
+    "fees_7d_usd": 262131,
+    "fees_all_time_usd": 7322956
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "raydium-amm": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 9027362,
+    "fees_7d_usd": 2037518,
+    "fees_all_time_usd": 1462289513
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "re": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2254699,
+    "fees_7d_usd": 552077,
+    "fees_all_time_usd": 14278565
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "re7-labs": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 65285,
+    "fees_7d_usd": 9192,
+    "fees_all_time_usd": 10290797
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "realms": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "realt-rmm-marketplace-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 97673,
+    "fees_7d_usd": 21562,
+    "fees_all_time_usd": 3503838
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "realt-tokens": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "renzo": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 34757,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 51660908
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "reserve-protocol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 81958,
+    "fees_7d_usd": 19855,
+    "fees_all_time_usd": 15181483
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "reservoir-protocol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 525390,
+    "fees_7d_usd": 106380,
+    "fees_all_time_usd": 13995100
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "resolv-usr": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 36384792
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "resupply": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 116527,
+    "fees_7d_usd": 24915,
+    "fees_all_time_usd": 4600782
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "reti-pooling": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "reya-perps": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 24622,
+    "fees_7d_usd": 5453,
+    "fees_all_time_usd": 6241579
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "rhea-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 378976,
+    "fees_7d_usd": 68424,
+    "fees_all_time_usd": 5746770
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "rhea-lend": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 260858,
+    "fees_7d_usd": 60102,
+    "fees_all_time_usd": 5637458
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "rhea-lst": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 13018,
+    "fees_7d_usd": 2880,
+    "fees_all_time_usd": 51916
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "rif-on-chain": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ring-few": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "risex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "river-omni-cdp": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 13,
+    "fees_7d_usd": 1,
+    "fees_all_time_usd": 608679
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "rnt-lend": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 42000,
+    "fees_7d_usd": 22045,
+    "fees_all_time_usd": 42000
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "robinhood": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "robinhood-chain-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "rockawayx": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 1005553,
+    "fees_7d_usd": 232036,
+    "fees_all_time_usd": 2784317
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "vault product tokens only: ROXUSDCY, ROXCUSDC"
+   },
+   "cryptorank": null
+  },
+  "rocket-pool": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 400472,
+    "fees_7d_usd": 88385,
+    "fees_all_time_usd": 216791699
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "rocketswap-anubis-v2": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "rocksolid-network": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 38299,
+    "fees_7d_usd": 8536,
+    "fees_all_time_usd": 547615
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "royco-v2": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "rsk-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "rysk-v12": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sanctum-infinity": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 818809,
+    "fees_7d_usd": 147664,
+    "fees_all_time_usd": 8527372
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sanctum-reserve": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 8933,
+    "fees_7d_usd": 1125,
+    "fees_all_time_usd": 2298241
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sanctum-validator-lsts": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 7284525,
+    "fees_7d_usd": 1346266,
+    "fees_all_time_usd": 234719445
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "saphyre-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 322442,
+    "fees_7d_usd": 49870,
+    "fees_all_time_usd": 17728753
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "saturn": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko",
+    "cryptorank",
+    "tokenterminal"
+   ],
+   "fees": {
+    "fees_30d_usd": 663613,
+    "fees_7d_usd": 264990,
+    "fees_all_time_usd": 4564488
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "search returned Saturn Dollar (USDAT) stablecoin and unrelated listings"
+   },
+   "cryptorank": {
+    "url": "https://CryptoRank.io/ico/saturn-protocol",
+    "token_status": "No Token",
+    "watchlists": null,
+    "total_raised_usd": 2800000,
+    "total_raised_verified": true,
+    "verification_note": "CryptoRank $2.80M cross-checks the BTCC/PANews roundup ($2.8M total: $800K round with YZi Labs and Sora Ventures + $2M seed led by Spartan Group), 2026-11-15; CryptoRank also flags \"Airdrop Reward Available\" for Saturn",
+    "rounds": [
+     {
+      "stage": "Strategic",
+      "date": "2026-08-13",
+      "raised_usd": null,
+      "note": "Ondo Finance participated; per-round amount gated behind a free account; not fetched"
+     }
+    ],
+    "investors_note": "23 investors on CryptoRank incl. YZi Labs, Sora Ventures, Spartan Group (per BTCC roundup); full list gated behind a free account"
+   },
+   "tokenterminal": {
+    "url": "https://tokenterminal.com/explorer/projects/morpho/satusdc/metrics/all",
+    "note": "Saturn USDC (Monad) Morpho vault token satUSDC: $9.3M circulating mcap, 9.3% APY, $61.0M mints, $112.8M transfer volume (Token Terminal, updated 2026-11-07)"
+   }
+  },
+  "saucerswap-v1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 11083,
+    "fees_7d_usd": 1260,
+    "fees_all_time_usd": 4071983
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "saucerswap-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 79535,
+    "fees_7d_usd": 11514,
+    "fees_all_time_usd": 9163448
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "save": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 46552,
+    "fees_7d_usd": 32405,
+    "fees_all_time_usd": 22371029
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "save-sol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 22985,
+    "fees_7d_usd": 4721,
+    "fees_all_time_usd": 522733
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "scallop-lend": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 17664,
+    "fees_7d_usd": 4502,
+    "fees_all_time_usd": 18004080
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sceptre-liquid": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "scroll-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sdai": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 150858,
+    "fees_7d_usd": 33645,
+    "fees_all_time_usd": 9023646
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "seamless-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 480
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sentora-curator": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 6185740,
+    "fees_7d_usd": 1419559,
+    "fees_all_time_usd": 51479098
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "serum": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "set-protocol": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sharpbyte-capital": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "shift-defi": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "shmonad": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 61702,
+    "fees_7d_usd": 11435,
+    "fees_all_time_usd": 1636320
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sierra-protocol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 102861,
+    "fees_7d_usd": 49683,
+    "fees_all_time_usd": 688823
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sky-lending": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 27418289,
+    "fees_7d_usd": 6073540,
+    "fees_all_time_usd": 1299903416
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sky-money": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 188776,
+    "fees_7d_usd": 48185,
+    "fees_all_time_usd": 2653154
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sky-rwa": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "snuggle": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 971011,
+    "fees_7d_usd": 203343,
+    "fees_all_time_usd": 6031104
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sodex-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "solayer-restaking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 29831,
+    "fees_7d_usd": 5377,
+    "fees_all_time_usd": 10710769
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "solomon-usdv": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 55497
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "solstice": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 14265,
+    "fees_7d_usd": 4041,
+    "fees_all_time_usd": 3667365
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "solv-basis-trading": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "solv-rwa": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "solv-strategies": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "solvbtc": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2448232,
+    "fees_7d_usd": 543882,
+    "fees_all_time_usd": 58667675
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "solvbtc-lsts": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sonic-gateway": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sophon-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sosovalue-indexes": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2317723,
+    "fees_7d_usd": 643529,
+    "fees_all_time_usd": 50116296
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sovryn-dex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sovryn-zero": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "spark-liquidity-layer": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 13178029,
+    "fees_7d_usd": 2936374,
+    "fees_all_time_usd": 189239211
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "spark-savings": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sparkdex-v3.1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 3480,
+    "fees_7d_usd": 1085,
+    "fees_all_time_usd": 1033930
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sparkdex-v4": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 32422,
+    "fees_7d_usd": 11422,
+    "fees_all_time_usd": 378579
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sparklend": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 7492688,
+    "fees_7d_usd": 1825313,
+    "fees_all_time_usd": 198855740
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "spectra-metavaults": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "spectra-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1529,
+    "fees_7d_usd": 374,
+    "fees_all_time_usd": 1405468
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "springsui": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 58170,
+    "fees_7d_usd": 12760,
+    "fees_all_time_usd": 6200985
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ssv-network": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 275920,
+    "fees_7d_usd": 57772,
+    "fees_all_time_usd": 6063869
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stablehodl": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stackingdao": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 263281,
+    "fees_7d_usd": 52111,
+    "fees_all_time_usd": 2298227
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stacks-sbtc": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stader": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 352949,
+    "fees_7d_usd": 61126,
+    "fees_all_time_usd": 17508304
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stake-dao-yield": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 103014,
+    "fees_7d_usd": 28192,
+    "fees_all_time_usd": 3130703
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stake.link-liquid": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 392727,
+    "fees_7d_usd": 105100,
+    "fees_all_time_usd": 14573637
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stakee": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 326480,
+    "fees_7d_usd": 76894,
+    "fees_all_time_usd": 3976845
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stakestone-stone": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 14668,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 7278306
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stakewise-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 733398,
+    "fees_7d_usd": 152079,
+    "fees_all_time_usd": 43295815
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stargate-v1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 33277346
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stargate-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 226806,
+    "fees_7d_usd": 20498,
+    "fees_all_time_usd": 4313232
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "starknet-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "starknet-btc-staking": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "steakhouse-financial": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko",
+    "cryptorank"
+   ],
+   "fees": {
+    "fees_30d_usd": 7483025,
+    "fees_7d_usd": 1833257,
+    "fees_all_time_usd": 99488533
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": {
+    "url": "https://cryptorank.io/price/steakhouse-financial",
+    "token_status": "No fundraising page",
+    "watchlists": 9,
+    "total_raised_usd": null,
+    "total_raised_verified": false,
+    "verification_note": "CryptoRank carries Steakhouse as a fund (/funds/steakhouse-financial/rounds) and a price page reading \"Market Data Unavailable\"; no /ico/ project fundraising page exists, so no total raised is recorded",
+    "rounds": [],
+    "investors_note": "fund page lists 4 investments (Axis, 3F, Makina, Cork Protocol) — Steakhouse as investor, not raiser"
+   }
+  },
+  "steer-protocol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 18752,
+    "fees_7d_usd": 3957,
+    "fees_all_time_usd": 1242845
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stellar-amm": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stellar-defi-hub": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stellar-dex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sthype": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 346447,
+    "fees_7d_usd": 68810,
+    "fees_all_time_usd": 6743628
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stkesol-by-sol-strategies": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 196622,
+    "fees_7d_usd": 36461,
+    "fees_all_time_usd": 2478833
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ston.fi": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 286013,
+    "fees_7d_usd": 97332,
+    "fees_all_time_usd": 20801585
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "strata-markets": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 140226,
+    "fees_7d_usd": 59408,
+    "fees_all_time_usd": 5300585
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "strato-cdp": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 16205,
+    "fees_7d_usd": 25,
+    "fees_all_time_usd": 59479
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "streamflow": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 189932,
+    "fees_7d_usd": 26131,
+    "fees_all_time_usd": 3146512
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "stusdt": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 175066,
+    "fees_7d_usd": 44436,
+    "fees_all_time_usd": 2248870
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "subfrost": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "suibridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "suilend": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 351708,
+    "fees_7d_usd": 113774,
+    "fees_all_time_usd": 37428141
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "summer.fi-pro": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 2500753
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sunswap-v1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 28861,
+    "fees_7d_usd": 8670,
+    "fees_all_time_usd": 4043306
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sunswap-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 302928,
+    "fees_7d_usd": 33188,
+    "fees_all_time_usd": 25799904
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sunswap-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 793182,
+    "fees_7d_usd": 121857,
+    "fees_all_time_usd": 32784247
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sunswap-v4": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 341970,
+    "fees_7d_usd": 51692,
+    "fees_all_time_usd": 1767557
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sunx-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "superearn": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "superfluid": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "superform": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 32680,
+    "fees_7d_usd": 6354,
+    "fees_all_time_usd": 621270
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sushi-stellar": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sushiswap": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 85246,
+    "fees_7d_usd": 10146,
+    "fees_all_time_usd": 687921871
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sushiswap-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 456930,
+    "fees_7d_usd": 83713,
+    "fees_all_time_usd": 14243072
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "swan-dao": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 3401,
+    "fees_7d_usd": 2640,
+    "fees_all_time_usd": 3401
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "swell-liquid-restaking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 17552,
+    "fees_7d_usd": 11763,
+    "fees_all_time_usd": 5062009
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "swell-liquid-staking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 56201,
+    "fees_7d_usd": 16037,
+    "fees_all_time_usd": 24568247
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "swissborg": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sx-rollup-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "sygnum-fiusd-liquidity-fund": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "symbiosis": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 207822,
+    "fees_7d_usd": 38158,
+    "fees_all_time_usd": 703361
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "symbiotic": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 136123,
+    "fees_7d_usd": 62668,
+    "fees_all_time_usd": 2576809
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "synapse-cross-chain-bridge": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1148,
+    "fees_7d_usd": 207,
+    "fees_all_time_usd": 31784641
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "syncswap": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 13452,
+    "fees_7d_usd": 4400,
+    "fees_all_time_usd": 3323430
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "syntetika": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "syntropia": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 83530,
+    "fees_7d_usd": 27242,
+    "fees_all_time_usd": 467889
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "t3tris-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 891,
+    "fees_7d_usd": -988,
+    "fees_all_time_usd": -36005
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "taiko-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "tangible-rwa": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 4837
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "tau-labs": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 9045,
+    "fees_7d_usd": 1668,
+    "fees_all_time_usd": 828481
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "tbtc": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 62266,
+    "fees_7d_usd": 31230,
+    "fees_all_time_usd": 2868709
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "team-finance": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "tectonic": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 943,
+    "fees_7d_usd": 229,
+    "fees_all_time_usd": 4015783
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "templar-lending": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "temple": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 221708,
+    "fees_7d_usd": 48154,
+    "fees_all_time_usd": 534983
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "tempo-stablecoin-dex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "tessera-v": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "the-idols": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "the-vault-liquid-staking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 480103,
+    "fees_7d_usd": 89824,
+    "fees_all_time_usd": 23441905
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "theo-network-thbill": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 40397,
+    "fees_7d_usd": -9083,
+    "fees_all_time_usd": 4579894
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "theo-network-thusd": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "thorchain-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 3701626,
+    "fees_7d_usd": 1293035,
+    "fees_all_time_usd": 178428175
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "tonstakers-lsd": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1918662,
+    "fees_7d_usd": 456771,
+    "fees_all_time_usd": 19892368
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "toobit": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "tori-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "tornado-cash": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 342430,
+    "fees_7d_usd": 61361,
+    "fees_all_time_usd": 14976856
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "treehouse-protocol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 31099,
+    "fees_7d_usd": 8436,
+    "fees_all_time_usd": 2819299
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "tulipa-capital": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": -383,
+    "fees_7d_usd": 112,
+    "fees_all_time_usd": 2417564
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "turboflow-perps": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "txflow-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "tydro": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 305761,
+    "fees_7d_usd": 67239,
+    "fees_all_time_usd": 6679433
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "tzbtc": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ultrayield-curator": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 5,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 221327
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "ultrayield-vaults": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 81526,
+    "fees_7d_usd": 18816,
+    "fees_all_time_usd": 996188
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "uncx-network-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 4899,
+    "fees_7d_usd": 1973,
+    "fees_all_time_usd": 14410356
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "uncx-network-v3": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "uniswap-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1982808,
+    "fees_7d_usd": 324314,
+    "fees_all_time_usd": 1839932631
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "uniswap-v3": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 35441714,
+    "fees_7d_usd": 7885691,
+    "fees_all_time_usd": 3748757981
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "uniswap-v4": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 35507872,
+    "fees_7d_usd": 5881055,
+    "fees_all_time_usd": 564240690
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "unit": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 557582,
+    "fees_7d_usd": 179691,
+    "fees_all_time_usd": 15741774
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "unitas-usdu": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 437961,
+    "fees_7d_usd": 90945,
+    "fees_all_time_usd": 7047971
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "unitus": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "upshift": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 2179893,
+    "fees_7d_usd": 530937,
+    "fees_all_time_usd": 33940261
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "uranium.io": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "usd-ai": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 2721031,
+    "fees_7d_usd": 3554,
+    "fees_all_time_usd": 31647644
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "usdcx": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "usdd": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 182055,
+    "fees_7d_usd": 37662,
+    "fees_all_time_usd": 5418389
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": {
+     "id": "usdd",
+     "name": "USDD",
+     "symbol": "USDD",
+     "note": "stablecoin product token; not a governance token"
+    },
+    "note": "stablecoin product token; not a governance token"
+   },
+   "cryptorank": null
+  },
+  "usdt0": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "usual-usd0": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 509599,
+    "fees_7d_usd": 62097,
+    "fees_all_time_usd": 76523415
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "valantis-sthype-restaking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 20676,
+    "fees_7d_usd": 5022,
+    "fees_all_time_usd": 20707
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "valdora-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 34509,
+    "fees_7d_usd": 6641,
+    "fees_all_time_usd": 696438
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "valos": {
+   "sources": [
+    "defillama-snapshot",
+    "coingecko"
+   ],
+   "fees": null,
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "search returned a YieldFi Valos product token only"
+   },
+   "cryptorank": null
+  },
+  "valr": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "vault-street": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "vaulta-rex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 19,
+    "fees_7d_usd": 6,
+    "fees_all_time_usd": 4936
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "veda": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 5166859,
+    "fees_7d_usd": 1197811,
+    "fees_all_time_usd": 62419785
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "unrelated only: NILA, RAVE, WEVE"
+   },
+   "cryptorank": null
+  },
+  "vena-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 11504,
+    "fees_7d_usd": 2712,
+    "fees_all_time_usd": 135811
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "veno-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 52748,
+    "fees_7d_usd": 10689,
+    "fees_all_time_usd": 4008260
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "venus-core-pool": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1144590,
+    "fees_7d_usd": 403089,
+    "fees_all_time_usd": 160029203
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "veranta": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 827899,
+    "fees_7d_usd": 419853,
+    "fees_all_time_usd": 26033973
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "vesper-v1": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 7026,
+    "fees_7d_usd": 610,
+    "fees_all_time_usd": 417877
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "vesper-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 76346,
+    "fees_7d_usd": 16206,
+    "fees_all_time_usd": 162225
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "vesu": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "vfat.io": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 81296,
+    "fees_7d_usd": 18702,
+    "fees_all_time_usd": 6409056
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "vires-finance": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "vishwa": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "volo-lst": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 25320,
+    "fees_7d_usd": 5541,
+    "fees_all_time_usd": 210254
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "vvs-standard": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 82549,
+    "fees_7d_usd": 34907,
+    "fees_all_time_usd": 18143076
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "wan-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "waterline": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "waterneuron": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 24074,
+    "fees_7d_usd": 6068,
+    "fees_all_time_usd": 1491664
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "wbtc": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 17729649
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "weex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "wemix.fi-staking": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "wise-token": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 435,
+    "fees_7d_usd": 102,
+    "fees_all_time_usd": 21513
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "world-chain-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "wrapped": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "wtao": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "xalgo-liquid-staking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 102025,
+    "fees_7d_usd": 21506,
+    "fees_all_time_usd": 1807389
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "xdai-stake-bridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "xion-finance": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "xrpl-dex": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 11356,
+    "fees_7d_usd": 11356,
+    "fees_all_time_usd": 11356
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "xsy": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "y10k-capital": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "yearn-curating": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 133223,
+    "fees_7d_usd": 29550,
+    "fees_all_time_usd": 1761542
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "yearn-finance": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 652430,
+    "fees_7d_usd": 191936,
+    "fees_all_time_usd": 149710533
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "yield-basis": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 197284,
+    "fees_7d_usd": -32160,
+    "fees_all_time_usd": -1040759
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "yield-yak-aggregator": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 608,
+    "fees_7d_usd": 557,
+    "fees_all_time_usd": 3551960
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "yieldfi": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 0,
+    "fees_7d_usd": 0,
+    "fees_all_time_usd": 11867956
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "yieldnest": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 1938,
+    "fees_7d_usd": 344,
+    "fees_all_time_usd": 435342
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "yo-protocol": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 61223,
+    "fees_7d_usd": 13540,
+    "fees_all_time_usd": 2349431
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "youves": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "yuzu-money": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees",
+    "coingecko"
+   ],
+   "fees": {
+    "fees_30d_usd": 476170,
+    "fees_7d_usd": 101756,
+    "fees_all_time_usd": 4966366
+   },
+   "coingecko": {
+    "checked": true,
+    "native_token": null,
+    "note": "no CoinGecko listing for the protocol name"
+   },
+   "cryptorank": null
+  },
+  "zama": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "zerobase-cedefi": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "zest-v2": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 82961,
+    "fees_7d_usd": 11674,
+    "fees_all_time_usd": 164504
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "zircuit-staking": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 110610,
+    "fees_7d_usd": 18121,
+    "fees_all_time_usd": 9812931
+   },
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "zksync-era-txbridge": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "zoo-finance": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "zoomex": {
+   "sources": [
+    "defillama-snapshot"
+   ],
+   "fees": null,
+   "coingecko": null,
+   "cryptorank": null
+  },
+  "zyfai": {
+   "sources": [
+    "defillama-snapshot",
+    "defillama-fees"
+   ],
+   "fees": {
+    "fees_30d_usd": 6705,
+    "fees_7d_usd": 597,
+    "fees_all_time_usd": 100152
+   },
+   "coingecko": null,
+   "cryptorank": null
+  }
+ }
+}
