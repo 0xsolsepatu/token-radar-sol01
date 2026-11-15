@@ -26,8 +26,9 @@
 // protocol as it stands.
 //
 // The curve is weak and the board says so. On the snapshot's own traded tokens the curve's
-// leave-one-out median miss is about 3.4x and only about 42% of real caps fall within 3x of the
-// curve's prediction; the flat median multiple it replaces misses by about 4.7x. The curve is a
+// leave-one-out median miss is about 3.6x for the curve-plus-category board (3.4x
+// curve-only) and only about 44% of real caps fall within 3x of the curve's prediction;
+// the flat median multiple it replaces misses by about 5.1x. The curve is a
 // rough anchor, not a prediction, and the dashboard's scatter chart shows the scatter instead of
 // hiding it. Every value is traceable: each row carries its curve value, its category factor and
 // the comparables behind it, so the reader can see exactly what the adjustment adds.
@@ -79,6 +80,8 @@ export interface Enrichment {
   } | null;
   /** Token Terminal's public per-token metrics page for a Morpho vault share (no key needed). */
   tokenterminal: { url: string; note: string } | null;
+  /** Material news for this protocol from the radar-5/radar-6 sweeps (build time, primary sources only). */
+  news: { date: string; category: string; title: string; source_url: string; materiality: 'high' | 'medium' | 'low' }[] | null;
 }
 
 /** The enrichment document: per-slug facts plus what each source contributed. */
@@ -131,12 +134,86 @@ export const MODEL: ModelConstants = {
     aptos: 0.01,
     tron: 0.1,
     ton: 0.02,
+    // Radar-7: every first chain on the sealed board is priced, so no row
+    // falls back to the $0.25 default (verified: 0 default fallbacks).
+    // Values are stated typical November 2026 fees, not quotes.
+    bitcoin: 1.5,
+    monad: 0.01,
+    stellar: 0.01,
+    flare: 0.02,
+    mantle: 0.01,
+    berachain: 0.01,
+    bittensor: 0.05,
+    bifrostnetwork: 0.02,
+    plume: 0.02,
+    plasma: 0.01,
+    arc: 0.05,
+    provenance: 0.01,
+    stacks: 0.05,
+    bsquared: 0.05,
+    rise: 0.01,
+    ronin: 0.01,
+    kava: 0.01,
+    algorand: 0.01,
+    manta: 0.02,
+    proton: 0.01,
+    mezo: 0.05,
+    noble: 0.01,
+    qubic: 0.01,
+    pharos: 0.01,
+    worldchain: 0.01,
+    reyanetwork: 0.01,
+    rsk: 0.02,
+    strato: 0.05,
+    klaytn: 0.02,
+    zksync: 0.02,
+    canton: 0.05,
+    tempo: 0.02,
+    stable: 0.01,
+    fluent: 0.01,
+    starknet: 0.02,
+    xion: 0.01,
+    sei: 0.01,
+    sonic: 0.01,
+    scroll: 0.01,
+    xrpl: 0.01,
+    opbnb: 0.01,
+    robinhoodchain: 0.05,
+    ripple: 0.01,
   },
   gas_default_usd: 0.25,
 };
 
+/** Chain-name aliases: DefiLlama's display names normalised to a gas-table key. */
+const CHAIN_ALIASES: Record<string, string> = {
+  hyperliquidl1: 'hyperliquid',
+  polygonzkevm: 'polygon',
+  zksyncera: 'zksync',
+  xrplevm: 'xrpl',
+  bittensorvm: 'bittensor',
+  bittensionevm: 'bittensor',
+  bnbsmartchain: 'bsc',
+  bnbchain: 'bsc',
+};
+
+/** The bootstrap's shared constants: one seed and one rep count for both consumers. */
+const BOOTSTRAP_REPS = 200;
+const BOOTSTRAP_SEED = 20261115;
+
+/** One bootstrap resample of the traded tokens, with the set of indices it drew. */
+function drawBootstrapSample(traded: SnapshotProtocol[], rng: () => number): { sample: SnapshotProtocol[]; drawn: Set<number> } {
+  const drawn = new Set<number>();
+  const sample: SnapshotProtocol[] = [];
+  for (let i = 0; i < traded.length; i++) {
+    const j = Math.floor(rng() * traded.length);
+    drawn.add(j);
+    sample.push(traded[j]!);
+  }
+  return { sample, drawn };
+}
+
 /** The model's version label: the dashboard names it. */
-export const MODEL_VERSION = 'radar-3';
+export const MODEL_VERSION = 'radar-7';
 
 /** A costed farm step: the action, its transactions on one chain, and its minutes. */
 export interface FarmStep {
@@ -160,8 +237,15 @@ export interface BoardRow {
   gecko_id: string | null;
   symbol: string | null;
   token_status: 'pre-token';
+  watchlist: boolean;
   age_days: number | null;
   implied_value_usd: number;
+  /** Rank by the curve alone (no category factor) — the same order as TVL, since the curve is monotone in TVL. */
+  rank_curve_only: number;
+  /** Rank by the flat median multiple — likewise the TVL order. */
+  rank_flat: number;
+  /** The 3 traded tokens closest in TVL: the curve's verdict checked case by case. */
+  neighbours: { slug: string; name: string; tvl_usd: number; mcap_usd: number; multiple: number }[];
   model: {
     curve_value_usd: number;
     curve_a: number;
@@ -173,6 +257,11 @@ export interface BoardRow {
     growth_pct: number | null;
     age_days: number | null;
     chains_count: number;
+    /** Middle 50% of 200 bootstrap refits of this row's implied value (radar-5). */
+    implied_low_usd: number;
+    implied_high_usd: number;
+    /** The mechanism this row's farm plan follows (radar-5). */
+    mechanism: string;
   };
   signal_quality: 'strong' | 'fair' | 'thin';
   farm_steps: string[];
@@ -190,6 +279,7 @@ export interface BoardRow {
   cryptorank: Enrichment['cryptorank'];
   coingecko: Enrichment['coingecko'];
   tokenterminal: Enrichment['tokenterminal'];
+  news: Enrichment['news'];
   /** The row's farm program, researched from public sources (watchlist rows only; null = template plan). */
   farm_program: { label: string; status: 'live' | 'none' | 'token-live'; source: string } | null;
   sources: string[];
@@ -227,6 +317,13 @@ export interface RadarRow {
   cryptorank: Enrichment['cryptorank'];
   coingecko: Enrichment['coingecko'];
   tokenterminal: Enrichment['tokenterminal'];
+  news: Enrichment['news'];
+  implied_low_usd: number;
+  implied_high_usd: number;
+  mechanism: string;
+  neighbours: BoardRow['neighbours'];
+  rank_curve_only: number;
+  rank_flat: number;
   farm_program: { label: string; status: 'live' | 'none' | 'token-live'; source: string } | null;
   sources: string[];
   watchlist: boolean;
@@ -290,7 +387,22 @@ export interface Backtest {
   time_split_flat: MissStats;
   time_split_fit_n: number;
   time_split_test_n: number;
+  /** Traded tokens in neither side of the time split (no listing date on record). */
+  time_split_excluded_n: number;
   flat_multiple: number;
+  /** Bootstrap stability (radar-5): 200 refits on resampled traded tokens, fixed seed. */
+  bootstrap: {
+    reps: number;
+    /** Out-of-bag median miss: each refit is tested on the traded tokens it did not draw. */
+    oob_median_miss: number;
+    oob_median_lo: number;
+    oob_median_hi: number;
+    oob_n: number;
+    curve_a_lo: number;
+    curve_a_hi: number;
+    curve_b_lo: number;
+    curve_b_hi: number;
+  };
 }
 
 /** Everything the dashboard needs. */
@@ -309,6 +421,8 @@ export interface RadarData {
   curve: { a: number; b: number; r2: number; resid_sd_dex: number; n: number; flat_multiple: number };
   backtest: Backtest;
   category_adjustments: CategoryAdjustment[];
+  /** Rank stability: how many of the shipped top 10 move under the curve-only or flat ranking. */
+  rank_stability: { top10_moved: number; top10_max_move: number };
   rows: RadarRow[];
   live: LiveRow[];
   set_aside: SetAsideRow[];
@@ -335,11 +449,33 @@ function median(sorted: number[]): number {
   return sorted.length % 2 === 1 ? sorted[mid]! : (sorted[mid - 1]! + sorted[mid]!) / 2;
 }
 
+/** One percentile of a list (linear interpolation); the list need not be sorted. */
+function percentile(values: number[], q: number): number {
+  if (values.length === 0) return 0;
+  const s = [...values].sort((a, b) => a - b);
+  const pos = (s.length - 1) * q;
+  const lo = Math.floor(pos);
+  const hi = Math.ceil(pos);
+  return s[lo]! + (s[hi]! - s[lo]!) * (pos - lo);
+}
+
+/** A deterministic PRNG (mulberry32): the bootstrap below must be byte-identical every run. */
+function mulberry32(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 /** A whole day count from `from` to `to`, clamped at zero; null when either date is absent or bad. */
 export function ageDays(asOf: string, listedAt: string | null): number | null {
   if (listedAt === null) return null;
-  const a = Date.parse(`${asOf}T00:00:00Z`);
-  const b = Date.parse(`${listedAt}T00:00:00Z`);
+  const a = Date.parse(`${asOf.split('T')[0]}T00:00:00Z`);
+  const b = Date.parse(`${listedAt.split('T')[0]}T00:00:00Z`);
   if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
   return Math.max(0, Math.floor((a - b) / DAY_MS));
 }
@@ -396,6 +532,7 @@ export function isRankable(p: SnapshotProtocol): boolean {
 /** Ordinary least squares on y against x; also R-squared and the residual scatter in dex. */
 function ols(xs: number[], ys: number[]): { a: number; b: number; r2: number; sd: number; n: number } {
   const n = xs.length;
+  if (n < 3) throw new SnapshotError(`cannot fit a curve on ${n} traded tokens`);
   const mx = xs.reduce((s, v) => s + v, 0) / n;
   const my = ys.reduce((s, v) => s + v, 0) / n;
   let sxx = 0;
@@ -406,6 +543,7 @@ function ols(xs: number[], ys: number[]): { a: number; b: number; r2: number; sd
     sxy += (xs[i]! - mx) * (ys[i]! - my);
     syy += (ys[i]! - my) ** 2;
   }
+  if (sxx === 0 || syy === 0) throw new SnapshotError('cannot fit a curve: traded TVLs or market caps do not vary');
   const b = sxy / sxx;
   const a = my - b * mx;
   const r2 = (sxy * sxy) / (sxx * syy);
@@ -465,6 +603,7 @@ export function categoryAdjustments(
 
 /** Miss statistics for a set of predictions against the real caps. */
 function missStats(preds: number[], actuals: number[]): MissStats {
+  if (preds.length === 0) throw new SnapshotError('backtest has an empty prediction set — cannot score a median miss');
   const misses = preds.map((pr, i) => Math.pow(10, Math.abs(Math.log10(pr / actuals[i]!)))).sort((a, b) => a - b);
   return {
     median_miss: round4(median(misses)),
@@ -489,6 +628,9 @@ export function backtest(snapshot: Snapshot, model: ModelConstants = MODEL): Bac
     const adj = useCat ? cats.get(p.category ?? 'Other')?.adjustment_dex ?? 0 : 0;
     return curveValue(p.tvl_usd, fit) * Math.pow(10, adj);
   };
+  // Radar-7: the flat baseline is refit inside each test too — one median per
+  // fold (leave-one-out) and the older set's median (time split) — so the
+  // baseline never sees the token or the period it is scored on.
   const loo = (useCat: boolean): MissStats => {
     const preds: number[] = [];
     const actuals: number[] = [];
@@ -498,8 +640,19 @@ export function backtest(snapshot: Snapshot, model: ModelConstants = MODEL): Bac
         train.map((p) => Math.log10(p.tvl_usd)),
         train.map((p) => Math.log10(p.mcap_usd!)),
       );
-      const cats = categoryAdjustments({ ...snapshot, protocols: train }, fit, model);
+      const cats = useCat ? categoryAdjustments({ ...snapshot, protocols: train }, fit, model) : new Map();
       preds.push(predict(traded[i]!, fit, cats, useCat));
+      actuals.push(traded[i]!.mcap_usd!);
+    }
+    return missStats(preds, actuals);
+  };
+  const looFlat = (): MissStats => {
+    const preds: number[] = [];
+    const actuals: number[] = [];
+    for (let i = 0; i < traded.length; i++) {
+      const train = traded.filter((_, j) => j !== i);
+      const foldFlat = median(train.map((p) => p.mcap_usd! / p.tvl_usd).sort((a, b) => a - b));
+      preds.push(foldFlat * traded[i]!.tvl_usd);
       actuals.push(traded[i]!.mcap_usd!);
     }
     return missStats(preds, actuals);
@@ -512,6 +665,7 @@ export function backtest(snapshot: Snapshot, model: ModelConstants = MODEL): Bac
     const age = ageDays(snapshot.as_of, p.listed_at);
     return age !== null && age <= model.time_split_days;
   });
+  const timeSplitExcluded = traded.filter((p) => ageDays(snapshot.as_of, p.listed_at) === null).length;
   const splitFit = ols(
     older.map((p) => Math.log10(p.tvl_usd)),
     older.map((p) => Math.log10(p.mcap_usd!)),
@@ -522,23 +676,109 @@ export function backtest(snapshot: Snapshot, model: ModelConstants = MODEL): Bac
       newer.map((p) => predict(p, splitFit, splitCats, useCat)),
       newer.map((p) => p.mcap_usd!),
     );
+  const splitFlatMultiple = median(older.map((p) => p.mcap_usd! / p.tvl_usd).sort((a, b) => a - b));
+  const splitFlat = (): MissStats =>
+    missStats(
+      newer.map((p) => splitFlatMultiple * p.tvl_usd),
+      newer.map((p) => p.mcap_usd!),
+    );
+  // Bootstrap stability (radar-5): 200 refits on resampled traded tokens, fixed seed.
+  // Each refit is tested on the tokens it did NOT draw (out-of-bag) — a third blind test
+  // beside leave-one-out and the time split, and the one that earns the per-row band.
+  const bootRng = mulberry32(BOOTSTRAP_SEED);
+  const oobMedians: number[] = [];
+  const oobCounts: number[] = [];
+  const bootA: number[] = [];
+  const bootB: number[] = [];
+  for (let r = 0; r < BOOTSTRAP_REPS; r++) {
+    const { sample, drawn } = drawBootstrapSample(traded, bootRng);
+    const bootFit = ols(
+      sample.map((p) => Math.log10(p.tvl_usd)),
+      sample.map((p) => Math.log10(p.mcap_usd!)),
+    );
+    const bootCats = categoryAdjustments({ ...snapshot, protocols: sample }, bootFit, model);
+    bootA.push(bootFit.a);
+    bootB.push(bootFit.b);
+    const oob = traded.filter((_, j) => !drawn.has(j));
+    if (oob.length > 0) {
+      oobCounts.push(oob.length);
+      oobMedians.push(
+        median(
+          oob
+            .map((p) => Math.pow(10, Math.abs(Math.log10(predict(p, bootFit, bootCats, true) / p.mcap_usd!))))
+            .sort((a, b) => a - b),
+        ),
+      );
+    }
+  }
+  const bootstrap = {
+    reps: BOOTSTRAP_REPS,
+    oob_median_miss: round4(median([...oobMedians].sort((a, b) => a - b))),
+    oob_median_lo: round4(percentile(oobMedians, 0.05)),
+    oob_median_hi: round4(percentile(oobMedians, 0.95)),
+    oob_n: Math.round(median([...oobCounts].sort((a, b) => a - b))),
+    curve_a_lo: round4(percentile(bootA, 0.05)),
+    curve_a_hi: round4(percentile(bootA, 0.95)),
+    curve_b_lo: round4(percentile(bootB, 0.05)),
+    curve_b_hi: round4(percentile(bootB, 0.95)),
+  };
   return {
     loo_curve: loo(false),
     loo_curve_category: loo(true),
-    loo_flat: missStats(
-      traded.map((p) => flatMultiple * p.tvl_usd),
-      traded.map((p) => p.mcap_usd!),
-    ),
+    loo_flat: looFlat(),
     time_split_curve: split(false),
     time_split_curve_category: split(true),
-    time_split_flat: missStats(
-      newer.map((p) => flatMultiple * p.tvl_usd),
-      newer.map((p) => p.mcap_usd!),
-    ),
+    time_split_flat: splitFlat(),
     time_split_fit_n: older.length,
     time_split_test_n: newer.length,
+    time_split_excluded_n: timeSplitExcluded,
     flat_multiple: round4(flatMultiple),
+    bootstrap,
   };
+}
+
+/**
+ * One board row's implied-value band (radar-5): the middle 50% (p25–p75) of the same 200
+ * bootstrap refits, recomputed per row. The point estimate never moves — the band says how
+ * much the refits disagree about it. Deterministic: the same fixed seed as backtest().
+ */
+export function bootstrapBands(
+  snapshot: Snapshot,
+  board: BoardRow[],
+  model: ModelConstants = MODEL,
+): Map<string, { low_usd: number; high_usd: number }> {
+  const traded = tradedTokens(snapshot);
+  const rng = mulberry32(BOOTSTRAP_SEED);
+  const vals = new Map<string, number[]>();
+  for (const row of board) vals.set(row.slug, []);
+  for (let r = 0; r < BOOTSTRAP_REPS; r++) {
+    const { sample } = drawBootstrapSample(traded, rng);
+    const fit = ols(
+      sample.map((p) => Math.log10(p.tvl_usd)),
+      sample.map((p) => Math.log10(p.mcap_usd!)),
+    );
+    const cats = categoryAdjustments({ ...snapshot, protocols: sample }, fit, model);
+    for (const row of board) {
+      const proto: SnapshotProtocol = {
+        slug: row.slug,
+        name: row.name,
+        category: row.category,
+        chains: row.chains,
+        tvl_usd: row.tvl_usd,
+        change_7d: row.change_7d,
+        mcap_usd: row.mcap_usd,
+        listed_at: row.listed_at,
+        gecko_id: row.gecko_id,
+        symbol: row.symbol,
+      };
+      vals.get(row.slug)!.push(impliedValue(proto, snapshot.as_of, fit, cats).implied);
+    }
+  }
+  const out = new Map<string, { low_usd: number; high_usd: number }>();
+  for (const [slug, list] of vals) {
+    out.set(slug, { low_usd: Math.max(1, Math.round(percentile(list, 0.25))), high_usd: Math.max(1, Math.round(percentile(list, 0.75))) });
+  }
+  return out;
 }
 
 /** The multipliers and the implied value one protocol gets under the fitted curve. */
@@ -554,6 +794,7 @@ export function impliedValue(
   categoryFactor: number;
   categoryComparables: number;
   categorySource: string;
+  hasCategoryAdjustment: boolean;
   age: number | null;
 } {
   const age = ageDays(asOf, protocol.listed_at);
@@ -567,15 +808,15 @@ export function impliedValue(
       ? 'global curve only — too few traded comparables in this category'
       : `category · ${comparables} traded`;
   const implied = Math.max(1, Math.round(curve * factor));
-  return { implied, curve, categoryAdjustmentDex: adj, categoryFactor: factor, categoryComparables: comparables, categorySource: source, age };
+  return { implied, curve, categoryAdjustmentDex: adj, categoryFactor: factor, categoryComparables: comparables, categorySource: source, hasCategoryAdjustment: entry !== undefined, age };
 }
 
 /** How much of the model's evidence a row actually has: age known, growth reported, category-backed. */
-export function signalQuality(p: SnapshotProtocol, age: number | null, categorySource: string): 'strong' | 'fair' | 'thin' {
+export function signalQuality(p: SnapshotProtocol, age: number | null, hasCategoryAdjustment: boolean): 'strong' | 'fair' | 'thin' {
   let signals = 0;
   if (age !== null) signals += 1;
   if (p.change_7d !== null) signals += 1;
-  if (categorySource.startsWith('category')) signals += 1;
+  if (hasCategoryAdjustment) signals += 1;
   return signals === 3 ? 'strong' : signals === 2 ? 'fair' : 'thin';
 }
 
@@ -585,11 +826,20 @@ function bySlug(protocols: SnapshotProtocol[]): Map<string, SnapshotProtocol> {
 }
 
 /** Gas for one transaction on a chain, in dollars, from the stated table (or the default). */
+const GAS_TABLE: Map<string, number> = new Map(
+  Object.entries(MODEL.gas_usd).map(([k, v]) => [k.replace(/[^a-z0-9]+/g, ''), v] as [string, number]),
+);
 function gasUsd(chain: string, model: ModelConstants = MODEL): number {
-  const key = chain.trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
-  const table: Record<string, number> = {};
-  for (const [k, v] of Object.entries(model.gas_usd)) table[k.replace(/[^a-z0-9]+/g, '')] = v;
-  return table[key] ?? model.gas_default_usd;
+  // Strip a trailing qualifier (L1 / Mainnet / EVM / zkEVM) before lookup, then aliases.
+  let key = chain.trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
+  key = key.replace(/(l1|mainnet|zkevm|evm)$/, '');
+  key = CHAIN_ALIASES[key] ?? key;
+  if (model !== MODEL) {
+    const table: Record<string, number> = {};
+    for (const [k, v] of Object.entries(model.gas_usd)) table[k.replace(/[^a-z0-9]+/g, '')] = v;
+    return table[key] ?? model.gas_default_usd;
+  }
+  return GAS_TABLE.get(key) ?? model.gas_default_usd;
 }
 
 /** The first chain a protocol names, or a neutral phrase. */
@@ -605,49 +855,98 @@ function holdDaysFor(age: number | null): number {
   return 30;
 }
 
-/** The category's one action, in the words a farmer can follow. */
-function actionFor(p: SnapshotProtocol, capital: number, chain: string): string {
+/**
+ * The mechanism a protocol farms by, from its category (radar-5). The 40 watchlist rows
+ * keep their researched programs; the other 158 rows farm by mechanism, not by a generic
+ * template: each mechanism names what the money actually does, what can go wrong with it,
+ * and — honestly — that no points program is published for this protocol in the sources
+ * checked, so the farm is yield unless the protocol's own pages later announce one.
+ */
+export function mechanismFor(p: SnapshotProtocol): string {
   const c = (p.category ?? '').toLowerCase();
-  const name = p.name;
-  if (c.includes('risk curator') || c.includes('curator') || c.includes('allocator')) return `Deposit $${capital} into a ${name} curated vault on ${chain} and keep the shares.`;
-  if (c.includes('basis')) return `Deposit $${capital} into ${name}'s basis-trading vault on ${chain} and keep the position open.`;
-  if (c.includes('lend') || c.includes('cdp') || c.includes('collateral')) return `Supply $${capital} of USDC to ${name} on ${chain} and keep the position open.`;
-  if (c.includes('dex') || c.includes('yield') || c.includes('leveraged farm')) return `Provide $${capital} of liquidity to ${name}'s main pool on ${chain} and keep the position open.`;
-  if (c.includes('bridge') || c.includes('cross chain')) return `Bridge $${capital} of USDC to ${chain} through ${name} and use the bridged funds in its app.`;
-  if (c.includes('staking') || c.includes('restak')) return `Stake $${capital} of the chain's staking asset through ${name} and keep the receipt.`;
-  if (c.includes('perpetual') || c.includes('derivative')) return `Deposit $${capital} of USDC as margin on ${name} and open one small hedge.`;
-  if (c.includes('prediction')) return `Fund $${capital} and place one market position on ${name}.`;
-  if (c.includes('stable')) return `Mint or deposit $${capital} of the stable asset through ${name} on ${chain}.`;
-  if (c.includes('rwa')) return `Mint $${capital} of the protocol's yield asset on ${chain} and hold it.`;
-  if (c.includes('insurance')) return `Buy $${capital} of cover from ${name} on ${chain} and keep the policy.`;
-  if (c.includes('payment')) return `Send $${capital} through ${name}'s payment rail on ${chain} and keep using it weekly.`;
-  if (c.includes('governance')) return `Deposit $${capital} and vote or delegate in ${name}'s governance on ${chain}.`;
-  if (c.includes('chain')) return `Bridge $${capital} to ${chain} and use ${name}'s native apps for a week.`;
-  if (c.includes('cede')) return `Deposit $${capital} into ${name} on ${chain} and keep the position open.`;
-  return `Deposit $${capital} of USDC into ${name} on ${chain} and keep the position open.`;
+  if (c.includes('risk curator') || c.includes('curator') || c.includes('allocator')) return 'curated-vault';
+  if (c.includes('basis')) return 'basis-trading';
+  if (c.includes('lend') || c.includes('cdp') || c.includes('collateral')) return 'lending';
+  if (c.includes('liquidity') || (c.includes('dex') && !c.includes('index')) || c.includes('leveraged farm')) return 'liquidity';
+  if (c.includes('anchor btc') || c.includes('decentralized btc')) return 'staking';
+  if (c.includes('farm')) return 'yield-farming';
+  if (c.includes('option')) return 'perps';
+  if (c.includes('yield')) return 'yield-farming';
+  if (c.includes('bridge') || c.includes('cross chain')) return 'bridging';
+  if (c.includes('staking') || c.includes('restak')) return 'staking';
+  if (c.includes('perpetual') || c.includes('derivative')) return 'perps';
+  if (c.includes('prediction')) return 'prediction';
+  if (c.includes('stable')) return 'stablecoin';
+  if (c.includes('rwa')) return 'rwa';
+  if (c.includes('insurance')) return 'insurance';
+  if (c.includes('payment') || c.includes('card') || c.includes('otc') || c.includes('marketplace')) return 'payments';
+  if (c.includes('governance')) return 'governance';
+  if (c.includes('chain')) return 'chain-apps';
+  if (c.includes('cede')) return 'cede-vault';
+  return 'vault';
 }
 
-/** A second, different qualifying action, so the farm is not one transaction repeated. */
-function secondActionFor(p: SnapshotProtocol, chain: string): string {
-  const c = (p.category ?? '').toLowerCase();
-  if (c.includes('lend') || c.includes('cdp') || c.includes('collateral')) return `Borrow a small amount against the deposit on ${p.name} and repay it the same week.`;
-  if (c.includes('dex') || c.includes('yield')) return `Swap a small amount in ${p.name}'s main pool on ${chain} once.`;
-  if (c.includes('bridge')) return `Bridge a small amount back the other way through ${p.name} once.`;
-  if (c.includes('governance')) return `Vote on one live proposal in ${p.name}'s governance.`;
-  return `Do one different action in ${p.name} — a swap, a vote or a second deposit — once.`;
+function mechanismPlan(
+  p: SnapshotProtocol,
+  capital: number,
+  chain: string,
+): { label: string; action: string; second: string; secondTxs: number; weekly: 'hold' | 'weekly'; claim: string } {
+  const name = p.name;
+  const mech = mechanismFor(p);
+  const yieldOnly = `No points program is published for this protocol in the sources checked as of 2026-11-15 — the farm is yield unless its own pages later announce one; claim only from a link they publish. Re-check: ${name}'s points/blog page monthly; a new season announcement changes this row from yield-only to points.`;
+  const usageOnly = ` This row is usage positioning only — no yield and no published points program; do not expect a return inside 90 days.`;
+  switch (mech) {
+    case 'curated-vault':
+      return { label: 'Curated vault · deposit into a vault a curator manages', action: `Deposit $${capital} into a ${name} curated vault on ${chain} and keep the shares — the curator picks the strategy, you hold the receipt.`, second: `Compare a second ${name} vault (different strategy or chain) once before adding more.`, secondTxs: 0, weekly: 'hold', claim: `${yieldOnly} Curator risk: the vault's strategy and fees are the curator's — read the vault's own strategy page before depositing.` };
+    case 'basis-trading':
+      return { label: 'Basis trading · capture the funding-rate spread', action: `Deposit $${capital} into ${name}'s basis-trading vault on ${chain} and keep the position open — the return is the funding-rate spread, not a token.`, second: `Check the vault's current funding-rate and basis once a week.`, secondTxs: 0, weekly: 'hold', claim: `${yieldOnly} Basis risk: funding rates flip sign — a long basis position can pay instead of earn.` };
+    case 'lending':
+      return { label: 'Lending · supply assets, earn interest', action: `Supply $${capital} of USDC to ${name} on ${chain} and keep the position open — interest accrues per block.`, second: `Borrow a small amount against the deposit on ${name} and repay it the same week.`, secondTxs: 1, weekly: 'hold', claim: `${yieldOnly} Liquidation risk: borrowing against the deposit can be liquidated if collateral falls — keep the loan small.` };
+    case 'liquidity':
+      return { label: 'Liquidity · provide depth to a pool', action: `Provide $${capital} of liquidity to ${name}'s main pool on ${chain} and keep the position open — fees accrue per swap.`, second: `Swap a small amount in ${name}'s main pool on ${chain} once.`, secondTxs: 1, weekly: 'weekly', claim: `${yieldOnly} Impermanent-loss risk: if the pool's prices move apart, the position can be worth less than holding.` };
+    case 'yield-farming':
+      return { label: 'Yield farming · deposit and compound', action: `Deposit $${capital} into ${name}'s main yield vault on ${chain} and keep the shares — yield compounds while the position is open.`, second: `Swap a small amount in ${name}'s main pool on ${chain} once.`, secondTxs: 1, weekly: 'hold', claim: `${yieldOnly} Strategy risk: the vault's yield comes from its strategy — read what it actually does before depositing.` };
+    case 'bridging':
+      return { label: 'Bridging · move funds across chains', action: `Bridge $${capital} of USDC to ${chain} through ${name} and use the bridged funds in its app.`, second: `Bridge a small amount back the other way through ${name} once.`, secondTxs: 1, weekly: 'weekly', claim: `${yieldOnly} Bridge risk: a bridge's contracts and relayers are the attack surface — use small amounts first.` };
+    case 'staking':
+      return { label: 'Staking · lock the chain asset, earn rewards', action: `Buy $${capital} of the chain's staking asset (1 transaction), then stake it through ${name} and keep the receipt — rewards accrue while staked.`, second: `Check the unbonding period and the current reward rate once.`, secondTxs: 0, weekly: 'hold', claim: `${yieldOnly} Slashing and lock-up risk: staked assets can be slashed or locked for days to weeks.` };
+    case 'perps':
+      return { label: 'Perpetuals · margin trading', action: `Deposit $${capital} of USDC as margin on ${name} and place a 1x hedge only — no leverage, keep the position small.`, second: `Close the hedge and check the funding cost once.`, secondTxs: 1, weekly: 'weekly', claim: `${yieldOnly} Liquidation risk: even a 1x hedge can lose money fast if the market moves against it — this mechanism is the riskiest on the board.` };
+    case 'prediction':
+      return { label: 'Prediction markets · take a position on an outcome', action: `Fund $${capital} and place one market position on ${name} — keep it to one market, sized as money you can lose.`, second: `Check the market's resolution rules once before placing a second position.`, secondTxs: 0, weekly: 'weekly', claim: `${yieldOnly} Outcome risk: a prediction position pays only if the outcome resolves your way.` };
+    case 'stablecoin':
+      return { label: 'Stablecoin · mint or hold the stable asset', action: `Mint or deposit $${capital} of the stable asset through ${name} on ${chain} and keep it.`, second: `Check the peg and the redemption route once.`, secondTxs: 0, weekly: 'hold', claim: `${yieldOnly} Depeg risk: a stable asset can trade off peg — check how redemption works before depositing.` };
+    case 'rwa':
+      return { label: 'RWA · hold tokenised real-world yield', action: `Mint $${capital} of the protocol's yield asset on ${chain} and hold it — the yield comes from the underlying real-world asset.`, second: `Check the redemption terms (timing, minimums, KYC) once.`, secondTxs: 0, weekly: 'hold', claim: `${yieldOnly} Redemption risk: RWA vaults can be permissioned, KYC-gated or slow to redeem — check the terms first.` };
+    case 'insurance':
+      return { label: 'Insurance · buy cover, earn premiums', action: `Buy $${capital} of cover from ${name} on ${chain} and keep the policy — premiums accrue while covered.`, second: `Read one claim's terms once so you know what is actually covered.`, secondTxs: 0, weekly: 'hold', claim: `${yieldOnly} Claims risk: cover pays only for the events the policy names, and claims can take weeks.` };
+    case 'payments':
+      return { label: 'Payments · route funds through the rail', action: `Send $${capital} through ${name}'s payment rail on ${chain} and keep using it weekly.`, second: `Try a second payment route on ${name} once.`, secondTxs: 1, weekly: 'weekly', claim: `${yieldOnly} The farm here is usage, not yield — a payment rail pays nothing unless it runs a rewards program.${usageOnly}` };
+    case 'governance':
+      return { label: 'Governance · deposit and vote', action: `Deposit $${capital} and vote or delegate in ${name}'s governance on ${chain}.`, second: `Vote on one live proposal in ${name}'s governance.`, secondTxs: 1, weekly: 'hold', claim: `${yieldOnly} Governance rarely pays directly — the farm is positioning for a future program, not yield.${usageOnly}` };
+    case 'chain-apps':
+      return { label: 'Chain apps · use the chain natively', action: `Bridge $${capital} to ${chain} and use ${name}'s native apps for a week.`, second: `Try a second native app on ${chain} once.`, secondTxs: 1, weekly: 'weekly', claim: `${yieldOnly} The farm here is usage across the chain's apps — no single vault pays the yield.${usageOnly}` };
+    case 'cede-vault':
+      return { label: 'CeDeFi vault · centralised yield, on-chain receipt', action: `Deposit $${capital} into ${name} on ${chain} and keep the position open.`, second: `Check the vault's custodian and audit notes once.`, secondTxs: 0, weekly: 'hold', claim: `${yieldOnly} Custody risk: a CeDeFi vault's yield depends on an off-chain operator — read who holds the funds.` };
+    default:
+      return { label: 'Vault · deposit and hold', action: `Deposit $${capital} of USDC into ${name} on ${chain} and keep the position open.`, second: `Do one different action in ${name} — a swap, a vote or a second deposit — once.`, secondTxs: 1, weekly: 'hold', claim: `${yieldOnly} Read the protocol's own pages before depositing — a vault's yield comes from its strategy.` };
+  }
 }
 
 /**
  * One watchlist row's protocol-specific farm plan, researched 2026-11-15 from public sources
  * only (project docs/blogs, official points pages, public vault pages). `action` replaces the
  * template's deposit step, `second` the template's second-action step, and `claim` the
- * template's claim step; the wallet-setup, weekly-action, hold and farm-log steps stay
- * template, and the transaction counts stay 1 / 1 / 12 so the costing is unchanged. `status`
+ * template's claim step; the wallet-setup, hold and farm-log steps stay template. Researched programs are
+ * hold-only, so their weekly step is a mid-period check (0 transactions) — a hold-only vault or staking
+ * position has no weekly qualifying action. `actionTxs`/`secondTxs` override the default 1 transaction
+ * where the slice must first be swapped or bridged (2) or the second step is a read-only check (0);
+ * `chain` overrides the first listed chain where the vault lives elsewhere. `status`
  * is 'live' (a points program is live and no token trades), 'token-live' (a token already
  * trades — the farm is yield plus a possible later season), or 'none' (no program found: the
  * farm is yield only, and the claim step says so). `verdict` overrides the cost formula only
- * where the slice cannot enter at all (permissioned vault, institutional-only, or a routing
- * node a $1,000 slice cannot run). Nothing here invents a quest, a points program or an
+ * where the slice cannot enter at all (permissioned vault, institutional-only, an exploited
+ * route, or a routing node a $1,000 slice cannot run). Nothing here invents a quest, a points program or an
  * airdrop: every row cites the public page it was read on, and the 158 early rows keep the
  * template plan.
  */
@@ -659,38 +958,72 @@ export interface FarmProgram {
   claim: string;
   source: string;
   verdict?: 'SKIP';
+  /** Transactions the action step needs (default 1): 2 where the slice must first be swapped or bridged into the deposit asset or chain. */
+  actionTxs?: number;
+  /** Transactions the second step needs (default 1): 0 where it is a read-only check. */
+  secondTxs?: number;
+  /** Chain the plan executes on, when it is not the snapshot's first chain (the vault lives elsewhere). */
+  chain?: string;
+}
+
+/** The wallet a farmer needs for a chain family: EVM is the default, the rest are named. */
+function walletFor(chain: string): string {
+  const key = chain.trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
+  switch (key) {
+    case 'solana': return 'a fresh Solana wallet (Phantom or Solflare)';
+    case 'bitcoin': return 'a fresh Bitcoin wallet (Sparrow)';
+    case 'stellar': return 'a fresh Stellar wallet (Freighter)';
+    case 'algorand': return 'a fresh Algorand wallet (Pera)';
+    case 'sui': return 'a fresh Sui wallet';
+    case 'bittensor': return 'a fresh Bittensor wallet';
+    case 'ripple': return 'a fresh XRP wallet (Xaman)';
+    case 'starknet': return 'a fresh Starknet wallet (Argent X or Braavos)';
+    case 'stacks': return 'a fresh Stacks wallet (Leather)';
+    case 'qubic': return 'a fresh Qubic wallet';
+    case 'canton': return 'a fresh Canton wallet';
+    case 'proton': return 'a fresh Proton wallet';
+    case 'hyperliquid': return 'a fresh Hyperliquid wallet';
+    case 'noble':
+    case 'provenance':
+    case 'xion': return 'a fresh Cosmos wallet (Keplr)';
+    case 'kava': return 'a fresh Cosmos wallet (Keplr) — Kava also accepts EVM wallets';
+    default: return 'a fresh EVM wallet';
+  }
 }
 
 export const FARM_PROGRAMS: Record<string, FarmProgram> = {
   'symbiotic': {
     program: 'Symbiotic Points — Season 2 live',
     status: 'live',
-    action: 'Deposit $1000 of wstETH, rETH, cbETH, sUSDe or ENA into a Symbiotic vault on Ethereum and delegate to a network or operator — Points accrue hourly at 0.001 points per $ of vault TVL allocated to adapters.',
+    action: 'Swap $1000 of USDC to wstETH (1 transaction), then deposit the wstETH into a Symbiotic vault on Ethereum and delegate to a network or operator — Points accrue hourly at 0.001 points per $ of vault TVL allocated to adapters.',
     second: 'Delegate the same vault position to a second network or operator once.',
     claim: 'Track Symbiotic Points on the Symbiotic app; no token is confirmed — points are the only record so far.',
     source: 'https://www.swanbluechip.com/rewards/p/symbiotic/',
+    actionTxs: 2,
   },
   'veda': {
-    program: 'Veda Points — live',
-    status: 'live',
-    action: 'Deposit $1000 into a Veda vault on Ink (weETHs Super Symbiotic LRT or a BoringVault product such as the ether.fi Liquid vault) and keep the shares — points accrue at 0.01 points per $ per day held, with vault multipliers up to 4x.',
-    second: 'Move part of the position into a second Veda vault product once.',
-    claim: 'Track Veda points on the Veda app; no token is confirmed.',
+    program: 'No verified points program — vault yield',
+    status: 'none',
+    action: 'Deposit $1000 into a Veda vault on Ink (weETHs Super Symbiotic LRT or a BoringVault product such as the ether.fi Liquid vault) and keep the shares — vault yield plus any vault multiplier.',
+    second: 'Move part of the position into a second Veda vault product once (async vaults may need a second claim transaction).',
+    claim: 'No Veda points program was verified from official sources — an aggregator (airdrops.io) mentions a points-based program that “may lead to a future token”, but no official Veda page confirms it; do not farm for Veda points. The farm is vault yield only. Veda raised $18M (CoinFund-led, Jun 2025).',
     source: 'https://airdrops.io/veda/',
   },
   'plume-vaults': {
-    program: 'Plume Nest Points (PNP) — Season One live; $PLUME already trades',
+    program: 'Plume Nest Points (PNP) — Season One ended Mar 2026; $PLUME already trades',
     status: 'token-live',
-    action: 'Deposit $1000 into a Nest vault on Ethereum (nBASIS, nALPHA, nWISDOM, nOPAL or nTBILL) and keep the vault tokens — PNP Season One runs through March 2026 with 1% of $PLUME supply allocated.',
-    second: 'Deploy the Nest vault tokens into a boosted venue once (Morpho up to 2% APY, Pendle up to 8% APY, Rooster 8x LP).',
-    claim: '$PLUME already trades (CoinGecko-verified) — PNP is the live points program on top; track PNP on the Plume Nest page.',
+    action: 'Bridge $1000 of USDC to Plume Mainnet, then deposit it into a Nest vault there (nBASIS, nALPHA, nWISDOM, nOPAL or nTBILL) and keep the vault tokens — PNP Season One ran through March 2026 with 1% of $PLUME supply allocated and has ended; no Season Two has been found.',
+    second: 'Deploy the Nest vault tokens into a boosted venue on Plume once (Morpho up to 2% APY, Pendle up to 8% APY, Rooster 8x LP).',
+    claim: '$PLUME already trades (CoinGecko-verified, rank 275) — PNP Season One is over, so this farm is RWA vault yield, not a points farm; watch the Plume Nest page for any new season.',
     source: 'https://www.plume.org/blog/meet-the-new-nest-real-yield-real-ownership',
+    actionTxs: 2,
+    chain: 'Plume Mainnet',
   },
   'onre': {
     program: 'OnRe Points — live',
     status: 'live',
-    action: 'Deposit $1000 of USDC into OnRe on Solana to mint ONyc and keep it — 1 point per ONyc per day (1x hold, 2x LP on Kamino/Orca/Raydium, 3x lending, 4x YT on Exponent).',
-    second: 'Provide ONyc liquidity on Kamino or Orca once for the 2x multiplier.',
+    action: 'Buy $1000 of ONyc on a Solana DEX (secondary market — direct mint is accredited/KYC-only) and hold it — 1 point per ONyc per day (1x hold, 2x LP on Kamino/Orca/Raydium, 3x lending, 4x YT on Exponent).',
+    second: 'Only provide ONyc liquidity on Kamino or Orca once if you accept NAV-token LP risk — ONyc is NAV-accreting, not a hard $1 peg; otherwise hold for the 1x rate.',
     claim: 'Track OnRe Points on the OnRe app; no token is confirmed. Avoid Loopscale — its exploit on 6 Nov 2026 froze withdrawals.',
     source: 'https://www.onre.finance/blog/onre-introduces-points-program-rewarding-onyc-participation-across-defi',
   },
@@ -698,54 +1031,59 @@ export const FARM_PROGRAMS: Record<string, FarmProgram> = {
     program: 'Doppler Points (DP) — live; XDP already trades',
     status: 'token-live',
     action: 'Deposit $1000 into a Doppler vault on Ripple (XRP Vault ~3.2% APR or RLUSD Vault ~8% APR) and keep the position — 0.01 DP per hour per $1 deposited, plus an Early-Depositor DP Boost.',
-    second: 'Stake the position for XDP once (staking live since 16 Oct 2026, 20x DP in Season 3).',
-    claim: 'XDP already trades (CoinGecko-verified, rank 827) — DP is the live points program on top; track DP on the Doppler app. Do not use doppler-finances.vercel.app — it looks like a copycat.',
+    second: 'Optional, needs capital outside the vault position: buy XDP separately and stake it for the 20x DP boost (staking live since 16 Oct 2026, Season 3) — otherwise the vault earns the base DP rate only.',
+    claim: 'XDP already trades (CoinGecko-verified, rank 831) — DP is the live points program on top; track DP on the Doppler app. Do not use doppler-finances.vercel.app — it looks like a copycat.',
     source: 'https://www.ainvest.com/news/xrp-news-today-xrp-yield-experiment-earns-3-41-apr-doppler-fi-2505/',
+    secondTxs: 0,
   },
   'noble': {
-    program: 'Noble Points Vault — live',
-    status: 'live',
-    action: 'Buy $1000 of USDN on Noble and deposit it into the Points Vault on Noble — longer locks accrue faster, with a multiplier after 30 days; you forgo the ~4.07% T-bill yield to earn points.',
-    second: 'Compare the Boosted Yield Vault (~13.5–16% APY historically) once before locking — one source says it was disabled on 6 Aug, so check live.',
-    claim: 'Track Noble points at points.noble.xyz; no token is confirmed.',
+    program: 'Points Vault unverified — USDN yield',
+    status: 'none',
+    action: 'Buy $1000 of USDN on Noble and hold it for the ~4.07% T-bill yield — the Boosted Yield Vault (~13.5–16% APY historically) is the higher-yield option; one source says it was disabled on 6 Aug, so check live before locking.',
+    second: 'Compare the Boosted Yield Vault once before locking — longer locks accrue faster, with a multiplier after 30 days.',
+    claim: 'No Noble points program was verified from official sources — a Points Vault is mentioned in aggregator feeds, but no official Noble page was found confirming a live program; do not farm for Noble points. The farm is USDN yield only. Track points claims at points.noble.xyz only if Noble itself publishes them.',
     source: 'https://m.followin.io/en/feed/17504868',
+    secondTxs: 0,
   },
   'upshift': {
     program: 'Upshift Points — Season 2 live',
     status: 'live',
-    action: 'Deposit $1000 into an Upshift vault on Ethereum (Morpho upUSDC 5x, Euler hgETH 5x, Pendle up to 7.5x) and keep the shares — 1x per vault deposit, 5x bonus while total TVL is under $750M (one check says the 5x cap is already reached — verify live).',
-    second: 'Complete one Layer3 quest for Upshift once.',
+    action: 'Deposit $1000 into an Upshift vault on Ethereum (Morpho upUSDC 5x, Euler hgETH 5x, Pendle up to 7.5x) and keep the shares — 1x per vault deposit, 5x bonus while total TVL is under $750M (snapshot TVL $499M, so the bonus is live at build time — verify live before depositing).',
+    second: 'Check the Upshift points page for the current quest.',
     claim: 'Track Upshift Points on the Upshift app; no token or airdrop is confirmed.',
     source: 'https://app.upshift.finance/points',
+    secondTxs: 0,
   },
   'b14g': {
-    program: 'b14g Point Program — live',
+    program: 'b14g Point Program — live (deposit route exploited — SKIP)',
     status: 'live',
-    action: 'Deposit $1000 of BTC into b14g on Bitcoin (dual-staking on Core/Babylon via the Merge Marketplace or a Coretoshi vault, ~18.72% APY + 2x points boost) and keep the position.',
-    second: 'Match the BTC deposit with CORE in the Merge Marketplace once.',
-    claim: 'Track b14g points on the b14g app. WARNING: the Marketplace contract was exploited on 31 Oct 2026 (~$1.47M CORE drained); BTC time-locked on Bitcoin was unaffected — check the post-exploit status before depositing.',
+    action: 'SKIP for a $1,000 slice: do NOT use the Merge Marketplace — it was exploited on 31 Oct 2026 (~97M CORE, ~$1.47M drained). The Coretoshi vault is the only named alternative and its post-exploit status is unverified — do not deposit until the post-mortem confirms a fix and deposits have resumed.',
+    second: 'No second action — there is no verified deposit route right now.',
+    claim: 'Track b14g points on the b14g app. The Marketplace contract was exploited on 31 Oct 2026 (~$1.47M CORE drained); BTC time-locked on Bitcoin was unaffected — check the post-exploit status before depositing anything.',
     source: 'https://paragraph.com/@b14g',
+    verdict: 'SKIP',
   },
   'firelight': {
-    program: 'Firelight Points — Phase 2 live',
-    status: 'live',
-    action: 'Bridge $1000 of XRP to FXRP on Flare and stake it for stXRP on Firelight — Phase 2 cover premiums stream into the vault (exit takes 30–60 days, staked FXRP can be slashed).',
+    program: 'Firelight Points ended 6 Oct 2026 — cover yield now',
+    status: 'none',
+    action: 'Mint FXRP with $1000 of XRP via Flare FAssets (check the mint cap is open first), then stake it for stXRP on Firelight — Phase 2 cover premiums stream into the vault (exit takes 30–60 days, staked FXRP can be slashed). Enter immediately: a late entry cannot exit inside the 90-day horizon.',
     second: 'Provide cover in a second Firelight vault once.',
-    claim: 'Track Firelight Points on the Firelight app. Early Contribution Rewards (230,000 FXRP via Merkl, claim deadline 7 Dec 2026) are for existing point holders only (at least 200,000 points).',
+    claim: 'Firelight Points (Phase 1) ended 6 Oct 2026 when cover went live — a new farmer earns cover premiums, not points. Early Contribution Rewards (230,000 FXRP via Merkl, claim deadline 7 Dec 2026) are for existing point holders only (at least 200,000 points). Note: Firelight reversed an anti-Sybil decision on 10 Oct 2026 after pushback — check current terms before depositing.',
     source: 'https://superapp.spendthebits.com/insights/earning-on-xrp-firelight-stxrp-points',
+    actionTxs: 2,
   },
   'clearstar': {
     program: 'No own points program — yield only (partner points via OpenEden)',
     status: 'none',
-    action: 'Deposit $1000 of USDC into the OpenEden USDC vault on Flare via Clearstar and keep the shares — it pays 3x BILL points (OpenEden\u2019s program, not Clearstar\u2019s).',
-    second: 'Try the Fusion Vault (YieldFi yUSD, ~15% APY + 6x YieldFi points) once with a small amount.',
+    action: 'Deposit $1000 of USDC into the OpenEden USDC vault on Flare via Clearstar and keep the shares — it pays 3x BILL points (OpenEden\u2019s program, not Clearstar\u2019s). Confirm first that this is the retail USDC vault on Flare, not the TBILL vault ($100,000 first mint, professional/accredited only) — if it is the TBILL vault, stop here.',
+    second: 'Try the Fusion Vault (YieldFi yUSD, ~15% APY + 6x YieldFi points) once with a small amount — verify first that it is open to a retail deposit on Flare.',
     claim: 'No Clearstar-native points program was found as of 2026-11-15 — the farm is yield plus partner points; do not expect a Clearstar points balance.',
     source: 'https://harvest.finance/usdc-morpho-clearstar-core-v2-ethereum',
   },
   'hyperithm': {
     program: 'No own points program — earns Saturn Points via vaults',
     status: 'none',
-    action: 'Deposit $1000 of USDT into the Hyperithm Saturn vault on Monad via Morpho and keep the shares — suppliers earn 5x Saturn Orbital Points plus 30K $LISTA emissions per week (up to ~24% APY).',
+    action: 'Deposit $1000 of USDT into the Hyperithm Saturn vault on Monad via Morpho and keep the shares — suppliers earn 5x Saturn Orbital Points plus 30K $LISTA emissions per week (up to ~24% APY). Register for the STRN claim at claim.saturn.credit BEFORE 16 Nov 2026 09:00 EST — no registration, no STRN — and confirm you are not a US/EEA/UK person.',
     second: 'Deposit into a second Hyperithm Saturn vault (USDC) once.',
     claim: 'No Hyperithm-native points program was found — points come from Saturn\u2019s program; track them on Saturn\u2019s pages.',
     source: 'https://twstalker.com/hyperithm',
@@ -755,32 +1093,39 @@ export const FARM_PROGRAMS: Record<string, FarmProgram> = {
     status: 'none',
     action: 'Deposit $1000 of USDC into the RockawayX Tori Ecosystem Vault on Ethereum via Upshift and keep the etrUSD shares — the vault earns Tori Cores plus strategy yield (~16.9% target total APY in Phase 2).',
     second: 'Check the Merkl page for the vault\u2019s live reward campaigns (WPROS, ZAMA) once.',
-    claim: 'No RockawayX-native points program was found — rewards are Merkl campaigns in WPROS/ZAMA; the Reservoir V2 WPROS campaign ends 16 Nov 2026 and the Zama ZAMA campaign ends 30 Nov.',
+    claim: 'No RockawayX-native points program was found — rewards are Merkl campaigns in WPROS/ZAMA; the Reservoir V2 WPROS campaign ends 16 Nov 2026 — effectively unavailable to a new farmer — and the Zama ZAMA campaign ends 30 Nov, at most ~15 days of accrual. The farm is Tori Cores plus strategy yield; this is the same Tori vault as the tori-finance row.',
     source: 'https://www.swanbluechip.com/rewards/',
+    secondTxs: 0,
   },
   'mezo-earn': {
     program: 'MEZO already trades — Phase 2 rules unpublished',
     status: 'token-live',
-    action: 'Deposit $1000 of BTC into Mezo Earn on Mezo and keep the position (~4%+ APY) — the Phase 1 airdrop (Jan 2026, ~20M MEZO to 11,845 addresses) is over; watch for Phase 2 rules.',
-    second: 'Use a second Mezo Earn product once.',
-    claim: 'MEZO already trades (CoinGecko-verified, rank 2495) — this farm is yield plus a possible Phase 2, not a first-token farm; check mezo.org for Phase 2 rules.',
+    action: 'Bridge $1000 of BTC to Mezo via the tBTC bridge (bridge transaction plus a wait, bridge fee on top), then deposit into Mezo Earn on Mezo and keep the position (~4%+ APY) — the Phase 1 airdrop (Jan 2026, ~20M MEZO to 11,845 addresses) is over; watch for Phase 2 rules.',
+    second: 'Check mezo.org for Phase 2 rules once.',
+    claim: 'MEZO already trades (CoinGecko-verified, rank 2471) — this farm is yield plus a possible Phase 2, not a first-token farm; check mezo.org for Phase 2 rules.',
     source: 'https://mezo.org/blog/the-mezo-allocation-methodology-phase-1',
+    actionTxs: 2,
+    secondTxs: 0,
   },
   'bittensor-dtao': {
     program: 'TAO already trades — stake for yield',
     status: 'token-live',
-    action: 'Stake $1000 of TAO in root (Subnet 0) on Bittensor at ~4.93% APY and keep the stake — the conservative route that keeps TAO.',
+    action: 'Buy $1000 of TAO (state the venue), then stake it in root (Subnet 0) on Bittensor at ~4.93% APY and keep the stake — the conservative route that keeps TAO.',
     second: 'Compare dTAO subnet alpha staking once (higher yield, higher risk) before moving any stake.',
     claim: 'TAO already trades (CoinGecko-verified, rank 39; first halving 15 Dec 2025) — this farm is staking yield, not a first-token farm.',
     source: 'https://taostats.io/docs/concepts/staking/staking-in-dtao',
+    actionTxs: 2,
+    secondTxs: 0,
   },
   'hive-protocol': {
     program: 'B2 already trades — stake BTC to earn B2',
     status: 'token-live',
-    action: 'Stake $1000 of BTC through Hive on BSquared and keep the position to earn B2 — the BUZZ campaign phases are done.',
+    action: 'Bridge $1000 of BTC to BSquared (bridge transaction plus a wait), then stake it through Hive on BSquared and keep the position to earn B2 — the BUZZ campaign phases are done.',
     second: 'Check the Hive app for any new campaign once.',
-    claim: 'B2 already trades (CoinGecko-verified as BSquared Network, rank 843; IDO 30 Apr 2025) — this farm is yield, not a first-token farm.',
+    claim: 'B2 already trades (CoinGecko-verified as BSquared Network, rank 848; IDO 30 Apr 2025) — this farm is yield, not a first-token farm. Verify B2 earning is still live on the Hive app before depositing.',
     source: 'https://www.kucoin.com/price/B2',
+    actionTxs: 2,
+    secondTxs: 0,
   },
   'usdd': {
     program: 'USDD already trades — stake sUSDD for yield',
@@ -789,12 +1134,13 @@ export const FARM_PROGRAMS: Record<string, FarmProgram> = {
     second: 'Compare the JustLend sUSDD market once.',
     claim: 'USDD is itself a live stablecoin since May 2022 (CoinGecko-verified, rank 55) — this farm is staking yield, not a first-token farm. Do not use stake-usdd.com (12.5% \u201cguaranteed\u201d — looks scammy).',
     source: 'https://eco.com/support/en/articles/12257504-what-is-usdd-tron-s-stablecoin-and-its-depeg-history',
+    secondTxs: 0,
   },
   'steakhouse-financial': {
     program: 'No own points program — yield + Level XP',
     status: 'none',
     action: 'Deposit $1000 of USDC into the Steakhouse Confidential Prime USDC vault on Base via Morpho and keep the shares (~7.2% base APY; the 12-week incentive program has wound down).',
-    second: 'Try the Steakhouse Level vault (5x Level XP) once with a small amount.',
+    second: 'Try the Steakhouse Level vault (5x Level XP) once with a small amount of the $1,000.',
     claim: 'No Steakhouse-native points program was found as of 2026-11-15 — the farm is yield plus Level XP; do not expect a Steakhouse points balance. Do not use the Medium \u201cSTEAKUSDC\u201d article — it looks fake/scam.',
     source: 'https://defillama.com/research/spotlight/confidential-onchain-yield-missing-infrastructure-institutional-capital',
   },
@@ -807,20 +1153,22 @@ export const FARM_PROGRAMS: Record<string, FarmProgram> = {
     source: 'https://harvest.finance/usdc-morpho-gauntlet-prime-v2-base',
   },
   'curvance': {
-    program: 'No live program — yield only on Monad',
+    program: 'No live program — yield only on Monad (risk report: avoid — SKIP)',
     status: 'none',
-    action: 'Deposit $1000 of USDC into a Curvance lending market on Monad and keep the position — mainnet is live; the testnet ended and no CVE token, TGE, snapshot or claim exists.',
-    second: 'Supply a second asset to Curvance once.',
-    claim: 'No Curvance points program was found as of 2026-11-15 — do not farm for CVE; the farm is lending yield only.',
+    action: 'SKIP for a $1,000 slice: an independent risk report moved Curvance from “caution” to “avoid” on 30 Sep 2026 — the Emergency Council bypassed the 5-day timelock, the May eBTC market is still paused and WBTC lenders cannot redeem. Re-check only after redemptions are restored.',
+    second: 'No second action — do not deposit while lenders cannot redeem.',
+    claim: 'No Curvance points program was found as of 2026-11-15 — do not farm for CVE. WARNING: an independent risk report moved Curvance from “caution” to “avoid” on 30 Sep 2026 — the Emergency Council bypassed the 5-day timelock, the May eBTC market is still paused and WBTC lenders cannot redeem.',
     source: 'https://boxmining.com/curvance-cve-token-airdrop-guide/',
+    verdict: 'SKIP',
   },
   'opentrade': {
-    program: 'No own points program — T-bill yield',
+    program: 'No own points program — T-bill yield (retail access blocked — SKIP)',
     status: 'none',
-    action: 'Deposit $1000 of USDC into an OpenTrade vault on Avalanche (T-bill yield ~4.10% base, up to 9.78% with Avalanche incentives) and keep the position.',
-    second: 'Compare the WOO X RWA Earn Vault (6–13.5% APR tiered, KYC, 5M USDC cap) once.',
-    claim: 'No OpenTrade points program was found as of 2026-11-15 — Sierra PEAKS is Sierra\u2019s program, not OpenTrade\u2019s; the farm is yield only.',
+    action: 'SKIP for a $1,000 retail slice: OpenTrade direct mint is professional/accredited + KYC only — no retail deposit route was found.',
+    second: 'No second action — the WOO X RWA Earn Vault named before is also KYC-gated.',
+    claim: 'No OpenTrade points program was found as of 2026-11-15 — Sierra PEAKS is Sierra\u2019s program, not OpenTrade\u2019s. Direct mint/redeem of OpenTrade vaults is restricted to professional and accredited investors and institutions after KYC.',
     source: 'https://www.opentrade.io/resource/can-stablecoin-yield-replace-savings-accounts-in-high-inflation-economies',
+    verdict: 'SKIP',
   },
   'lightning-network': {
     program: 'No token or points — routing node (SKIP)',
@@ -834,18 +1182,22 @@ export const FARM_PROGRAMS: Record<string, FarmProgram> = {
   'lagoon': {
     program: 'No own points program — vault infrastructure',
     status: 'none',
-    action: 'Deposit $1000 of USDC into a public Lagoon vault on Ethereum (e.g. Turtle Lines USDC, ~$859M) and keep the shares — Lagoon is ERC-7540 async-vault infrastructure, not a points program.',
+    action: 'Deposit $1000 of USDC into a public Lagoon vault on Ethereum (e.g. Turtle Lines USDC, ~$859M) and keep the shares — Lagoon is ERC-7540 async-vault infrastructure, not a points program. Deposit is a request plus a claim (2 transactions); confirm Turtle Lines is a public vault before depositing.',
     second: 'Check a second Lagoon vault once; note some funds are permissioned or approved-address only (DAMM funds).',
     claim: 'No Lagoon points program was found as of 2026-11-15 — the farm is vault yield only.',
     source: 'https://tradingstrategy.ai/vaults/protocols/lagoon-finance',
+    actionTxs: 2,
+    secondTxs: 0,
   },
   'nonce-capital': {
     program: 'No own points program — curator yield',
     status: 'none',
-    action: 'Deposit $1000 into the ether.fi Liquid ETH vault on Ethereum (Veda BoringVault, strategy by Nonce Capital, ~3.5% APY) and keep the shares.',
+    action: 'Swap $1000 of USDC to ETH (1 transaction), then deposit the ETH into the ether.fi Liquid ETH vault on Ethereum (Veda BoringVault, strategy by Nonce Capital, ~3.5% APY) and keep the shares.',
     second: 'Compare a second Nonce-curated strategy once.',
     claim: 'No Nonce Capital points program was found as of 2026-11-15 — the farm is curator yield only; withdrawals take 3–10 days.',
     source: 'https://www.stakingrewards.com/defi/0xf0bb20865277abd641a307ece5ee04e79073416c',
+    actionTxs: 2,
+    secondTxs: 0,
   },
   'armitage-by-wintermute': {
     program: 'No points program — curator yield',
@@ -854,14 +1206,17 @@ export const FARM_PROGRAMS: Record<string, FarmProgram> = {
     second: 'Compare a second Armitage-curated Morpho market once.',
     claim: 'No Armitage points program was found as of 2026-11-15 — the farm is curator yield only.',
     source: 'https://pendlefi.substack.com/p/pendle-print-128',
+    secondTxs: 0,
   },
   'ember': {
     program: 'No points program — Sui vault yield',
     status: 'none',
-    action: 'Deposit $1000 of USDC into the Ember eEARN flagship vault on Ethereum (~10% target APY, 3-day withdrawal) and keep the shares.',
+    action: 'Deposit $1000 of USDC into the Ember eEARN flagship vault on Sui (~10% target APY, 3-day withdrawal) and keep the shares. Confirm the vault is open to retail deposits first — some Ember vaults are permissioned or KYC.',
     second: 'Compare the R25 Treasury vault (mrcUSD, 12% target) once — note some Ember vaults are permissioned or KYC.',
     claim: 'No Ember token and no points program as of 12 Oct 2026 — the farm is vault yield only.',
     source: 'https://www.jewelswap.io/blog/what-is-ember-protocol',
+    chain: 'Sui',
+    secondTxs: 0,
   },
   'galaxy-curation': {
     program: 'Institutional only — not retail-accessible (SKIP)',
@@ -879,6 +1234,7 @@ export const FARM_PROGRAMS: Record<string, FarmProgram> = {
     second: 'Compare the Coinshift USPC High Yield vault on Lagoon (targets 12%+, net APR ~8.27%) once.',
     claim: 'No Gami Labs points program was found as of 2026-11-15 — the farm is curator yield only.',
     source: 'https://www.upshift.finance/blog/usdc-yield',
+    secondTxs: 0,
   },
   'k3-capital': {
     program: 'No own points program — curator yield',
@@ -887,54 +1243,62 @@ export const FARM_PROGRAMS: Record<string, FarmProgram> = {
     second: 'Compare the K3 cbMaxxxing USDC vault on Base (~5.24%) once.',
     claim: 'No K3 points program was found as of 2026-11-15 — the farm is curator yield only.',
     source: 'https://www.k3-capital.net/',
+    secondTxs: 0,
   },
   'keyrock': {
     program: 'No points program — curator yield',
     status: 'none',
-    action: 'Deposit $1000 of USDC into the Keyrock Prime USDC vault on Arc ($75.24M, 2.19–2.20% APY) and keep the shares.',
-    second: 'Compare the Keyrock USDC vault on Ethereum (~6.7% APY) once.',
+    action: 'Deposit $1000 of USDC into the Keyrock USDC vault on Ethereum (~6.7% APY) and keep the shares. Arc mainnet and the Keyrock Prime USDC vault on Arc ($75.24M, 2.19–2.20% APY) were unverified for retail access at build time, so the Ethereum vault is the route priced here.',
+    second: 'Compare a second Keyrock-curated vault once before adding more.',
     claim: 'No Keyrock points program was found as of 2026-11-15 — the farm is curator yield only. Token Terminal tracks the kUSDC vault share publicly.',
     source: 'https://DeFiLlama.com/protocol/keyrock',
+    chain: 'Ethereum',
+    secondTxs: 0,
   },
   'lofty': {
     program: 'No points program — real-estate rent',
     status: 'none',
-    action: 'Buy $1000 of Lofty property tokens on Algorand ($50 per token, daily rent paid in USDC) and keep them — $99M+ TVL, 40,000+ users, $5M+ rent distributed.',
-    second: 'List one token on Lofty\u2019s secondary market once (0.5% seller fee) to learn the exit.',
+    action: 'Complete Lofty KYC first — US tax residents must be accredited investors; if you are not, stop here. Then buy $1000 of Lofty property tokens on Algorand ($50 per token, daily rent paid in USDC) and keep them — $99M+ TVL, 40,000+ users, $5M+ rent distributed.',
+    second: 'Check the secondary-market price of one comparable token (read-only) to learn the exit — do not list your own tokens.',
     claim: 'No Lofty points program was found — the farm is rental yield only (median property rental income ~3.47% of listing price over 12 months; 63 of 81 tokens traded below listing price; no SEC filing; California consent order 2022).',
     source: 'https://altstreet.investments/platforms/reviews/lofty',
+    secondTxs: 0,
   },
   'r25': {
     program: 'No points program — RWA vault yield',
     status: 'none',
     action: 'Deposit $1000 of USDC into the R25 Treasury vault on Pharos via Ember (rcUSD/mrcUSD, 12% APY target, T+4 withdrawal) and keep the position.',
-    second: 'Check the TopNod rcUSD vault terms once (14% early → 12% regular, 12-month term ending 31 Dec 2026, $7M cap).',
+    second: 'Check the TopNod rcUSD vault terms once (14% early → 12% regular, 12-month term ending 31 Dec 2026, $7M cap). Do NOT deposit here — the 12-month term runs past the 90-day horizon.',
     claim: 'No R25 token farming and no points program — stated explicitly in the vault guide; the farm is RWA yield only.',
     source: 'https://followin.io/en/feed/22266268',
+    secondTxs: 0,
   },
   'reti-pooling': {
     program: 'No points program — Algorand staking pools',
     status: 'none',
-    action: 'Deposit $1000 of ALGO into a Réti pool on Algorand via reti.nodely.io (pools from 10 ALGO; direct staking needs 30,000 ALGO) and keep the stake to earn consensus rewards.',
+    action: 'Buy $1000 of ALGO (1 swap), then deposit it into a Réti pool on Algorand via reti.nodely.io (pools from 10 ALGO; direct staking needs 30,000 ALGO) and keep the stake to earn consensus rewards.',
     second: 'Compare a second Réti pool once — some pools pay extra reward tokens.',
     claim: 'No RETI token and no points program was found — the farm is staking yield only.',
     source: 'https://txnlab.gitbook.io/reti-open-pooling/',
+    actionTxs: 2,
+    secondTxs: 0,
   },
   'saturn': {
     program: 'Saturn Orbital Points — Season 2 live',
     status: 'live',
-    action: 'Swap $1000 of USDC for USDat on Ethereum via app.saturn.credit and hold it — 5x Orbital Points; Season 2 runs 9 Aug–8 Dec 2026 (or until $1B TVL) with up to 5% of initial supply for participants, conditional on a token launch.',
-    second: 'Provide USDC/USDat liquidity on Curve once for 25x points (or hold YT-USDat on Pendle for 30x).',
-    claim: 'Track Orbital Points on Saturn\u2019s pages; governance token STRN is reported for TGE in Q4 2026 (secondary source — not confirmed on Saturn\u2019s own pages). sUSDat unstaking has a days-long queue; not available to US/EEA/UK persons.',
-    source: 'https://usethebitcoin.com/airdrop/saturn-airdrop-guide/',
+    action: 'REGISTER FIRST at claim.saturn.credit before 16 Nov 2026 09:00 EST — after that, no STRN claim is possible. Then swap $1000 of USDC for USDat on Ethereum via app.saturn.credit and hold it — 5x Orbital Points; Season 2 runs 9 Aug–8 Dec 2026 (or until $1B TVL). Registration opened 9 Nov 2026.',
+    second: 'Provide USDC/USDat liquidity on Curve once for 25x points. Pendle YT-USDat (30x) is an optional, explicitly loss-capped slice only: YT expires worthless at maturity — state the maturity date and cap it at a small share of the $1,000.',
+    claim: 'STRN confirmed: up to 5% of initial supply for Season 2 Orbital Points; TGE targeted Q4 2026; snapshot at TGE or 8 Dec 2026, whichever first. sUSDat unstaking has a days-long queue; not available to US/EEA/UK persons.',
+    source: 'https://airdrops.io/saturn-credit/',
   },
   'tori-finance': {
     program: 'Tori Cores — Season 1 live',
     status: 'live',
-    action: 'Deposit $1000 of USDC into the RockawayX Tori Ecosystem Vault on Ethereum via Upshift and keep the etrUSD shares — earn Tori Cores plus strategy yield (target ~16.9% total APY in Phase 2; 30-day lock).',
-    second: 'Stake trUSD directly into strUSD once to compare the direct route.',
+    action: 'Deposit $1000 of USDC into the RockawayX Tori Ecosystem Vault on Ethereum via Upshift and keep the etrUSD shares — earn Tori Cores plus strategy yield (target ~16.9% total APY in Phase 2; 30-day lock). The current Season 1 rate is not published, so the points return cannot be sized in advance.',
+    second: 'Compare the direct route (mint trUSD, stake to strUSD) with a separate small deposit only if you want a second position — it is not a conversion of your etrUSD shares.',
     claim: 'Track Cores on Tori\u2019s docs/app; the pre-deposit phase (30 Cores per $ per day, 2x boost) is complete and the current Season 1 rate is not published. Cores are explicitly not a promise of any token or payment.',
     source: 'https://docs.tori.finance/resources/cores',
+    secondTxs: 0,
   },
   'tulipa-capital': {
     program: 'No own points program — curator yield',
@@ -943,14 +1307,16 @@ export const FARM_PROGRAMS: Record<string, FarmProgram> = {
     second: 'Check the Morpho app for MORPHO rewards on the vault once (distributed via Merkl).',
     claim: 'No Tulipa points program was found as of 2026-11-15 — the farm is curator yield plus MORPHO rewards.',
     source: 'https://defillama.com/protocol/tulipa-capital',
+    secondTxs: 0,
   },
   'tydro': {
     program: 'TydroInkPoints — Season 2 live',
     status: 'live',
-    action: 'Bridge $1000 to Ink and supply USDC to Tydro on Ink (Aave v3 fork, Ink\u2019s largest lending market, ~$141M TVL) — weekly TydroInkPoints campaigns (e.g. USDC supply ~32,500–35,000 points/week); points are time-weighted, so deposit early and hold.',
+    action: 'Bridge $1000 to Ink (1 transaction), then supply USDC to Tydro on Ink (Aave v3 fork, Ink\u2019s largest lending market, ~$111M TVL) — weekly TydroInkPoints campaigns (e.g. USDC supply ~32,500–35,000 points/week); points are time-weighted, so deposit early and hold.',
     second: 'Borrow a small amount against the deposit once — borrowing also earns points; check the weekly renewal thread for current budgets.',
     claim: 'Track TydroInkPoints on the Tydro forum; Season 1 snapshot is complete, Season 2 runs until TGE. Boosts up to +50% exist for OG users, lending history and kBTC holdings.',
     source: 'https://forum.tydro.com/t/tydroinkpoints-season-2-introducing-boost-multipliers/22/2',
+    actionTxs: 2,
   },
   'valos': {
     program: 'Flagship vault permissioned — no retail route (SKIP)',
@@ -965,25 +1331,28 @@ export const FARM_PROGRAMS: Record<string, FarmProgram> = {
     program: 'Yuzu Juice — live',
     status: 'live',
     action: 'Deposit $1000 of USDC into the Accountable Yuzu Money Vault on Monad (~7.7% APY) and keep the shares — Yuzu Juice accrues on positions, often at 3x in official vaults; the team has confirmed Juice converts linearly into tokens at TGE.',
-    second: 'Mint or hold syzUSD (staked yzUSD, ~10% APY, T-bill-backed) once via app.yuzu.money.',
+    second: 'Mint or hold syzUSD (staked yzUSD, ~10% APY, T-bill-backed) once on Monad via app.yuzu.money.',
     claim: 'Track Yuzu Juice on the Yuzu app; $YUZU has no published TGE date, tokenomics or allocation — Juice is the positioning, not a promise. Referrals pay 10% to the referrer and +5% to the referee.',
     source: 'https://www.drops.bot/airdrops/upcoming/yuzu',
+    chain: 'Monad',
   },
   'axis': {
-    program: 'No points program — synthetic-dollar yield',
-    status: 'none',
-    action: 'Mint $1000 of USDx on Ethereum via axis.to (USDC/USDT) and stake it into sUSDx — 30-day base APY was 16.06% on 12 Nov 2026 (DefiLlama Research, highest of 98 stablecoin pools vs a 4.17% T-bill).',
+    program: 'Coordinates — Season 1 live',
+    status: 'live',
+    action: 'Mint $1000 of USDx on Ethereum via axis.to (USDC/USDT) and stake it into sUSDx — Coordinates (non-transferable, no monetary value, no token guarantee) accrue on the position; 30-day base APY was 16.06% on 12 Nov 2026 (DefiLlama Research, highest of 98 stablecoin pools vs a 4.17% T-bill). Verify the USDx mint minimum in axis.to docs before minting.',
     second: 'Check the sUSDx redemption queue once — redemption is asynchronous with a 7-day cooldown.',
-    claim: 'No Axis points program was found as of 2026-11-15 — the farm is yield only. Axis\u2019s own docs say USDx is \u201cnot a stablecoin\u201d and can trade off peg; rewards are discretionary with no fixed APY.',
-    source: 'https://defillama.com/protocol/axis',
+    claim: 'Track Coordinates on the Axis app; the Origin Vault closed 5 Aug 2026 at $67.25M across 1,857 wallets. Axis\u2019s own docs say USDx is \u201cnot a stablecoin\u201d and can trade off peg; rewards are discretionary with no fixed APY.',
+    source: 'https://ourcryptotalk.com/blog/crypto-yield-is-evolving-can-axis-deliver-institutional-returns',
+    secondTxs: 0,
   },
   'infinifi': {
     program: 'infiniFi Points — Season 3 live',
     status: 'live',
     action: 'Mint $1000 of iUSD with USDC on Ethereum via infiniFi and stake siUSD (or lock liUSD) — Season 3 points live, 45% of supply allocated to the ecosystem, TGE targeted Q4 2026; Pendle YT-siUSD carries a 20x multiplier, Morpho/Euler/TAU 7.5x.',
-    second: 'Deploy siUSD into a Pendle YT position once for the 20x multiplier.',
-    claim: 'Track infiniFi points on the infiniFi app; Seasons 1–2 registration closed 10 Nov 2026 — Season 3 is the live season; weekly Chapters share a 336,000-point pool.',
+    second: 'Optional, loss-capped slice only: a small share of siUSD into Pendle YT-siUSD for the 20x multiplier — YT expires worthless at maturity, so state the maturity date and cap the share; the base plan holds siUSD/liUSD.',
+    claim: 'Track infiniFi points on the infiniFi app; Seasons 1–2 registration closed 10 Nov 2026 — Season 3 is the live season; weekly Chapters share a 336,000-point pool. TGE targeted Q4 2026, date unannounced; 100M INFI supply (45% ecosystem / 20% team / 20% investors / 15% foundation).',
     source: 'https://airdrops.io/infinifi/',
+    secondTxs: 0,
   },
 };
 
@@ -997,51 +1366,75 @@ export const FARM_PROGRAMS: Record<string, FarmProgram> = {
  * row's researched program overrides it (the slice cannot enter at all). No step claims a
  * quest, a points program or a reward the protocol has not published: the 40 watchlist rows
  * use the researched programs in FARM_PROGRAMS (each citing its public source), and the other
- * rows derive their plan from the protocol's own record (category, chains, TVL, age).
+ * rows farm by mechanism (mechanismPlan): what the money actually does, what can go wrong
+ * with it, and the honest statement that no points program is published for the protocol
+ * in the sources checked.
  */
 export function farmPlan(
   p: SnapshotProtocol,
   age: number | null,
   fees30d: number | null,
   model: ModelConstants = MODEL,
-): { steps: FarmStep[]; gas_usd: number; opportunity_usd: number; net_usd: number; minutes: number; txs: number; verdict: 'FARM' | 'THIN' | 'SKIP' } {
-  const chain = chainOf(p);
+): { steps: FarmStep[]; gas_usd: number; opportunity_usd: number; net_usd: number; minutes: number; txs: number; verdict: 'FARM' | 'THIN' | 'SKIP'; mechanism: string } {
+  const program = FARM_PROGRAMS[p.slug];
+  // Costing policy (radar-7): gas is priced on the chain where the plan's steps
+  // execute — the researched program's chain where one is stated, else the
+  // protocol's first listed chain — never the cheapest listed chain.
+  const chain = program?.chain ?? chainOf(p);
   const hold = holdDaysFor(age);
   const weeklyTxs = Math.floor(model.horizon_days / 7);
-  const program = FARM_PROGRAMS[p.slug];
   // A SKIP-by-access row costs no transactions: the slice never enters, so the weekly
   // action and the hold become a "do not deploy, re-check access" pair instead.
   const skipByAccess = program?.verdict === 'SKIP';
+  // Radar-5: rows without a researched program farm by mechanism, not by a generic
+  // template — the mechanism names what the money does and what can go wrong with it.
+  const mech = program === undefined ? mechanismPlan(p, model.slice_usd, chain) : null;
+  const mechanism = program !== undefined ? 'researched program' : mech!.label;
+  const mechKey = mechanismFor(p);
+  // Radar-7: a hold-only position has no weekly qualifying action, so the weekly
+  // step costs 0 transactions there. Researched programs are all hold-only; the
+  // template keeps a weekly action only for perps, prediction, bridging,
+  // liquidity, payments and chain-apps, where using the protocol weekly is the farm.
+  const weeklyKind: 'hold' | 'weekly' = program !== undefined ? 'hold' : mech!.weekly;
+  const actionTxs = skipByAccess ? 0 : program?.actionTxs ?? (mechKey === 'staking' ? 2 : 1);
+  const secondTxs = skipByAccess ? 0 : program?.secondTxs ?? mech?.secondTxs ?? 1;
   const steps: FarmStep[] = [
-    { text: 'Use a fresh wallet that holds only the funds you plan to farm, and keep its seed phrase offline.', txs: 0, chain, minutes: 5 },
+    { text: `Use ${walletFor(chain)} that holds only the funds you plan to farm, and keep its seed phrase offline.`, txs: 0, chain, minutes: 5 },
     program !== undefined
-      ? { text: program.action, txs: skipByAccess ? 0 : 1, chain, minutes: 15 }
-      : { text: actionFor(p, model.slice_usd, chain), txs: 1, chain, minutes: 15 },
+      ? { text: program.action, txs: actionTxs, chain, minutes: 15 }
+      : { text: mech!.action, txs: actionTxs, chain, minutes: 15 },
     program !== undefined
-      ? { text: program.second, txs: skipByAccess ? 0 : 1, chain, minutes: 10 }
-      : { text: secondActionFor(p, chain), txs: 1, chain, minutes: 10 },
+      ? { text: program.second, txs: secondTxs, chain, minutes: 10 }
+      : { text: mech!.second, txs: secondTxs, chain, minutes: 10 },
     skipByAccess
       ? { text: 'No weekly action — the slice does not enter this protocol; re-check access monthly instead.', txs: 0, chain, minutes: 10 }
-      : { text: 'Make one qualifying action each week, such as a deposit, a borrow, a swap or a vote.', txs: weeklyTxs, chain, minutes: 10 * weeklyTxs },
+      : weeklyKind === 'weekly'
+        ? { text: 'Make one qualifying action each week, such as a deposit, a borrow, a swap or a vote.', txs: weeklyTxs, chain, minutes: 10 * weeklyTxs }
+        : { text: 'No weekly transaction — hold the position; check it once mid-way through the 90 days.', txs: 0, chain, minutes: 10 },
     skipByAccess
       ? { text: 'Do not deploy the slice here; if access opens later, re-read the protocol\u2019s own pages before entering.', txs: 0, chain, minutes: 0 }
       : { text: `Hold the position for at least ${hold} days so the activity is counted in more than one snapshot.`, txs: 0, chain, minutes: 0 },
     program !== undefined
       ? { text: program.claim, txs: 0, chain, minutes: 10 }
-      : { text: `Before you withdraw, open the protocol's own points or rewards page and claim only from the link it publishes.`, txs: 0, chain, minutes: 10 },
+      : { text: mech!.claim, txs: 0, chain, minutes: 10 },
     { text: `Write the wallet, the dates and every transaction in a farm log, and set a monthly reminder to re-check the protocol.`, txs: 0, chain, minutes: 5 },
   ];
   const unit = gasUsd(chain, model);
   const txs = steps.reduce((s, st) => s + st.txs, 0);
   const minutes = steps.reduce((s, st) => s + st.minutes, 0);
   const gas = Math.round(txs * unit * 100) / 100;
-  const opportunity = Math.round(model.slice_usd * model.tbill_yield * (model.horizon_days / 365) * 100) / 100;
+  // A slice that never deploys keeps its T-bill yield, so its opportunity cost is $0.
+  const opportunity = skipByAccess ? 0 : Math.round(model.slice_usd * model.tbill_yield * (model.horizon_days / 365) * 100) / 100;
   const net = Math.round((gas + opportunity) * 100) / 100;
   const quality = (p.tvl_usd >= 50_000_000 ? 2 : p.tvl_usd >= 10_000_000 ? 1 : 0) + (fees30d !== null && fees30d > 0 ? 1 : 0);
-  const verdict: 'FARM' | 'THIN' | 'SKIP' =
+  let verdict: 'FARM' | 'THIN' | 'SKIP' =
     program?.verdict ??
     (net <= model.farm_cost_farm_usd && quality >= 2 ? 'FARM' : net <= model.farm_cost_thin_usd && quality >= 1 ? 'THIN' : 'SKIP');
-  return { steps, gas_usd: gas, opportunity_usd: opportunity, net_usd: net, minutes, txs, verdict };
+  // Radar-7: usage-only mechanisms (payments, governance, chain-apps) and the
+  // riskiest ones (perps, prediction) never earn FARM on cost alone — a plan
+  // with no yield, or a leveraged bet, is not a farm.
+  if (verdict === 'FARM' && ['payments', 'governance', 'chain-apps', 'perps', 'prediction'].includes(mechKey)) verdict = 'THIN';
+  return { steps, gas_usd: gas, opportunity_usd: opportunity, net_usd: net, minutes, txs, verdict, mechanism };
 }
 
 /** One costed step as one string: its action, then its cost and time, within 20..600 characters. */
@@ -1049,8 +1442,11 @@ export function stepText(step: FarmStep, model: ModelConstants = MODEL): string 
   const unit = gasUsd(step.chain, model);
   const cost = step.txs === 0 ? '$0' : `$${(Math.round(step.txs * unit * 100) / 100).toFixed(2)} of gas (${step.txs} transaction${step.txs === 1 ? '' : 's'} on ${step.chain})`;
   const time = step.minutes === 0 ? 'no time, just waiting' : step.minutes >= 60 ? `${Math.round((step.minutes / 60) * 10) / 10} hours over the plan` : `${step.minutes} minutes`;
-  let s = `${step.text} Cost: ${cost}. Time: ${time}.`;
-  if (s.length > 600) s = `${s.slice(0, 596)}...`;
+  const suffix = ` Cost: ${cost}. Time: ${time}.`;
+  // Truncate the action first, so a long action never amputates its cost disclosure.
+  let action = step.text;
+  if (action.length + suffix.length > 600) action = `${action.slice(0, 600 - suffix.length - 3)}...`;
+  let s = `${action}${suffix}`;
   if (s.length < 20) s = `${s} Hold the position and check the protocol's own page.`;
   return s;
 }
@@ -1067,7 +1463,9 @@ export function buildBoard(
   const chosen = new Map<string, SnapshotProtocol>();
   for (const slug of snapshot.watchlist) {
     const p = index.get(slug);
-    if (p !== undefined) chosen.set(slug, p);
+    if (p === undefined) continue;
+    if (!isRankable(p)) throw new SnapshotError(`watchlist slug ${slug} is not rankable: ${setAsideReason(p) ?? 'records a token'}`);
+    chosen.set(slug, p);
   }
   for (const p of snapshot.protocols) {
     if (!chosen.has(p.slug) && isRankable(p)) chosen.set(p.slug, p);
@@ -1080,6 +1478,22 @@ export function buildBoard(
     return { p, v, enr, plan };
   });
   scored.sort((a, b) => b.v.implied - a.v.implied || (a.p.slug < b.p.slug ? -1 : a.p.slug > b.p.slug ? 1 : 0));
+  // Rank stability (radar-7): the same rows ranked by the curve alone and by the
+  // flat median multiple. Both are monotone in TVL, so they agree with each other
+  // and differ from the shipped rank only where the category factor moves a row.
+  const slugCmp = (a: { slug: string }, b: { slug: string }): number => (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0);
+  const rankCurveOnly = new Map<string, number>(
+    [...scored].sort((a, b) => b.v.curve - a.v.curve || slugCmp(a.p, b.p)).map((s, i) => [s.p.slug, i + 1] as [string, number]),
+  );
+  const rankFlat = new Map<string, number>(
+    [...scored].sort((a, b) => b.p.tvl_usd - a.p.tvl_usd || slugCmp(a.p, b.p)).map((s, i) => [s.p.slug, i + 1] as [string, number]),
+  );
+  const traded = tradedTokens(snapshot);
+  const neighboursFor = (tvl: number): BoardRow['neighbours'] =>
+    [...traded]
+      .sort((a, b) => Math.abs(Math.log10(a.tvl_usd) - Math.log10(tvl)) - Math.abs(Math.log10(b.tvl_usd) - Math.log10(tvl)) || slugCmp(a, b))
+      .slice(0, 3)
+      .map((p) => ({ slug: p.slug, name: p.name, tvl_usd: p.tvl_usd, mcap_usd: p.mcap_usd!, multiple: round4(p.mcap_usd! / p.tvl_usd) }));
   const board: BoardRow[] = scored.map((s, i) => ({
     rank: i + 1,
     slug: s.p.slug,
@@ -1093,8 +1507,12 @@ export function buildBoard(
     gecko_id: s.p.gecko_id,
     symbol: s.p.symbol,
     token_status: 'pre-token',
+    watchlist: snapshot.watchlist.includes(s.p.slug),
     age_days: s.v.age,
     implied_value_usd: s.v.implied,
+    rank_curve_only: rankCurveOnly.get(s.p.slug)!,
+    rank_flat: rankFlat.get(s.p.slug)!,
+    neighbours: neighboursFor(s.p.tvl_usd),
     model: {
       curve_value_usd: Math.round(s.v.curve),
       curve_a: round4(fit.a),
@@ -1103,11 +1521,15 @@ export function buildBoard(
       category_factor: round4(s.v.categoryFactor),
       category_comparables: s.v.categoryComparables,
       category_source: s.v.categorySource,
-      growth_pct: s.p.change_7d === null ? null : round4(clamp(s.p.change_7d, -50, 100)),
+      growth_pct: s.p.change_7d === null ? null : round4(s.p.change_7d),
       age_days: s.v.age,
       chains_count: s.p.chains.length,
+      // Patched by buildRadar with the bootstrap band; the point value stands in until then.
+      implied_low_usd: s.v.implied,
+      implied_high_usd: s.v.implied,
+      mechanism: s.plan.mechanism,
     },
-    signal_quality: signalQuality(s.p, s.v.age, s.v.categorySource),
+    signal_quality: signalQuality(s.p, s.v.age, s.v.hasCategoryAdjustment),
     farm_steps: s.plan.steps.map((st) => stepText(st, model)),
     farm: {
       gas_usd: s.plan.gas_usd,
@@ -1120,17 +1542,24 @@ export function buildBoard(
     fees_30d_usd: s.enr?.fees?.fees_30d_usd ?? null,
     fees_7d_usd: s.enr?.fees?.fees_7d_usd ?? null,
     fees_all_time_usd: s.enr?.fees?.fees_all_time_usd ?? null,
-    cryptorank: s.enr?.cryptorank ?? null,
+    cryptorank:
+      s.enr?.cryptorank === undefined || s.enr?.cryptorank === null
+        ? null
+        : { ...s.enr.cryptorank, rounds: [...(s.enr.cryptorank.rounds ?? [])].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0)) },
     coingecko: s.enr?.coingecko ?? null,
     tokenterminal: s.enr?.tokenterminal ?? null,
+    news: s.enr?.news ?? null,
     farm_program:
       FARM_PROGRAMS[s.p.slug] === undefined
         ? null
         : { label: FARM_PROGRAMS[s.p.slug]!.program, status: FARM_PROGRAMS[s.p.slug]!.status, source: FARM_PROGRAMS[s.p.slug]!.source },
-    sources:
-      FARM_PROGRAMS[s.p.slug] === undefined
-        ? s.enr?.sources ?? ['defillama-snapshot']
-        : [...(s.enr?.sources ?? ['defillama-snapshot']), FARM_PROGRAMS[s.p.slug]!.source],
+    sources: [
+      ...new Set(
+        FARM_PROGRAMS[s.p.slug] === undefined
+          ? [...(s.enr?.sources ?? ['defillama-snapshot']), ...((s.enr?.news ?? []).map((n) => n.source_url))]
+          : [...(s.enr?.sources ?? ['defillama-snapshot']), FARM_PROGRAMS[s.p.slug]!.source, ...((s.enr?.news ?? []).map((n) => n.source_url))],
+      ),
+    ],
   }));
   return { board, fit, cats };
 }
@@ -1139,7 +1568,7 @@ export function buildBoard(
 export function liveRows(snapshot: Snapshot, enrichment: EnrichmentDoc | null): LiveRow[] {
   return snapshot.protocols
     .filter((p) => !isPreToken(p))
-    .sort((a, b) => (b.mcap_usd ?? 0) - (a.mcap_usd ?? 0) || b.tvl_usd - a.tvl_usd)
+    .sort((a, b) => (b.mcap_usd ?? 0) - (a.mcap_usd ?? 0) || b.tvl_usd - a.tvl_usd || (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0))
     .map((p) => ({
       slug: p.slug,
       name: p.name,
@@ -1156,7 +1585,7 @@ export function liveRows(snapshot: Snapshot, enrichment: EnrichmentDoc | null): 
 export function setAsideRows(snapshot: Snapshot): SetAsideRow[] {
   return snapshot.protocols
     .filter((p) => isPreToken(p) && setAsideReason(p) !== null)
-    .sort((a, b) => b.tvl_usd - a.tvl_usd)
+    .sort((a, b) => b.tvl_usd - a.tvl_usd || (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0))
     .map((p) => ({ slug: p.slug, name: p.name, category: p.category, tvl_usd: p.tvl_usd, reason: setAsideReason(p)! }));
 }
 
@@ -1193,6 +1622,13 @@ export function radarRow(row: BoardRow, watchlist: Set<string>): RadarRow {
     cryptorank: row.cryptorank,
     coingecko: row.coingecko,
     tokenterminal: row.tokenterminal,
+    news: row.news,
+    implied_low_usd: row.model.implied_low_usd,
+    implied_high_usd: row.model.implied_high_usd,
+    mechanism: row.model.mechanism,
+    neighbours: row.neighbours,
+    rank_curve_only: row.rank_curve_only,
+    rank_flat: row.rank_flat,
     farm_program: row.farm_program,
     sources: row.sources,
     watchlist: watchlist.has(row.slug),
@@ -1209,7 +1645,23 @@ export function buildRadar(
   const live = liveRows(snapshot, enrichment);
   const setAside = setAsideRows(snapshot);
   const bt = backtest(snapshot, model);
-  const early = board.filter((r) => !snapshot.watchlist.includes(r.slug)).length;
+  // Radar-5: the bootstrap band per row — the same 200 refits as the backtest's
+  // stability block, so the band and the backtest can never disagree.
+  const bands = bootstrapBands(snapshot, board, model);
+  for (const row of board) {
+    const band = bands.get(row.slug);
+    if (band !== undefined) {
+      row.model.implied_low_usd = band.low_usd;
+      row.model.implied_high_usd = band.high_usd;
+    }
+  }
+  const watchlistSet = new Set(snapshot.watchlist);
+  const early = board.filter((r) => !watchlistSet.has(r.slug)).length;
+  const top10 = board.slice(0, 10);
+  const rankStability = {
+    top10_moved: top10.filter((r) => r.rank_curve_only !== r.rank || r.rank_flat !== r.rank).length,
+    top10_max_move: top10.reduce((m, r) => Math.max(m, Math.abs(r.rank_curve_only - r.rank), Math.abs(r.rank_flat - r.rank)), 0),
+  };
   const categoryAdjustmentRows: CategoryAdjustment[] = [...cats.entries()]
     .map(([category, v]) => ({ category, adjustment_dex: round4(v.adjustment_dex), factor: round4(v.factor), comparables: v.comparables, source: 'category' as const }))
     .sort((a, b) => b.comparables - a.comparables || (a.category < b.category ? -1 : a.category > b.category ? 1 : 0));
@@ -1228,7 +1680,8 @@ export function buildRadar(
     curve: { a: round4(fit.a), b: round4(fit.b), r2: round4(fit.r2), resid_sd_dex: round4(fit.resid_sd_dex), n: fit.n, flat_multiple: round4(fit.flat_multiple) },
     backtest: bt,
     category_adjustments: categoryAdjustmentRows,
-    rows: board.map((r) => radarRow(r, new Set(snapshot.watchlist))),
+    rank_stability: rankStability,
+    rows: board.map((r) => radarRow(r, watchlistSet)),
     live,
     set_aside: setAside,
     traded_points: tradedTokens(snapshot).map((p) => ({ slug: p.slug, name: p.name, category: p.category, tvl_usd: p.tvl_usd, mcap_usd: p.mcap_usd! })),
@@ -1258,6 +1711,7 @@ export function parseSnapshot(text: string): Snapshot {
     if (typeof p.slug !== 'string' || typeof p.name !== 'string' || typeof p.tvl_usd !== 'number' || !Number.isFinite(p.tvl_usd)) {
       throw new SnapshotError(`snapshot.json's protocol ${i} lacks a slug, a name or a TVL`);
     }
+    if (p.tvl_usd <= 0) throw new SnapshotError(`snapshot.json's protocol ${i} (${p.slug}) has TVL ${p.tvl_usd}`);
     return {
       slug: p.slug,
       name: p.name,
@@ -1271,6 +1725,11 @@ export function parseSnapshot(text: string): Snapshot {
       symbol: typeof p.symbol === 'string' ? p.symbol : null,
     };
   });
+  const seen = new Set<string>();
+  for (const pr of protocols) {
+    if (seen.has(pr.slug)) throw new SnapshotError(`snapshot.json repeats the slug ${pr.slug}`);
+    seen.add(pr.slug);
+  }
   return {
     as_of: o.as_of,
     source: o.source,
@@ -1286,6 +1745,20 @@ export function parseEnrichment(text: string | null): EnrichmentDoc | null {
   try {
     const raw = JSON.parse(text) as EnrichmentDoc;
     if (typeof raw !== 'object' || raw === null || typeof raw.protocols !== 'object' || raw.protocols === null) return null;
+    // Shape-check each entry: a malformed enrichment row used to flow verbatim
+    // into board.json and the dashboard. Bad entries are dropped, not scored on.
+    for (const [slug, e] of Object.entries(raw.protocols)) {
+      if (typeof e !== 'object' || e === null || Array.isArray(e)) return null;
+      const en = e as Record<string, unknown>;
+      if (en.fees !== null && en.fees !== undefined && (typeof en.fees !== 'object' || Array.isArray(en.fees))) return null;
+      if (en.news !== null && en.news !== undefined && !Array.isArray(en.news)) return null;
+      if (en.cryptorank !== null && en.cryptorank !== undefined) {
+        const cr = en.cryptorank as Record<string, unknown>;
+        if (typeof cr !== 'object' || (cr.rounds !== undefined && cr.rounds !== null && !Array.isArray(cr.rounds))) return null;
+      }
+      if (en.sources !== undefined && !Array.isArray(en.sources)) return null;
+      void slug;
+    }
     return raw;
   } catch {
     return null;
@@ -1301,6 +1774,7 @@ export function boardIssue(board: BoardRow[], snapshot: Snapshot): string | null
   if (board.length !== rankable) return `the board has ${board.length} rows but ${rankable} protocols are rankable`;
   const ranks = board.map((r) => r.rank).sort((a, b) => a - b);
   for (let i = 0; i < ranks.length; i++) if (ranks[i] !== i + 1) return `rank ${i + 1} is ${ranks[i]}`;
+  for (let i = 0; i < board.length; i++) if (board[i]!.rank !== i + 1) return `row ${i + 1} carries rank ${board[i]!.rank}`;
   for (let i = 1; i < board.length; i++) if (board[i]!.implied_value_usd > board[i - 1]!.implied_value_usd) return `row ${i + 1} outranks row ${i} on implied value`;
   if (board.length >= 2 && board[0]!.implied_value_usd === board[board.length - 1]!.implied_value_usd) {
     return `all ${board.length} rows share the same implied value $${board[0]!.implied_value_usd}: a board that ranks nothing by value is not a ranking`;
@@ -1311,7 +1785,7 @@ export function boardIssue(board: BoardRow[], snapshot: Snapshot): string | null
     for (const s of steps) if (s.length < 20 || s.length > 600) return `${r.slug} has a farm step of ${s.length} characters`;
     if (!Number.isSafeInteger(r.implied_value_usd) || r.implied_value_usd <= 0) return `${r.slug} has implied value ${r.implied_value_usd}`;
     if (!['FARM', 'THIN', 'SKIP'].includes(r.farm.verdict)) return `${r.slug} has farm verdict ${r.farm.verdict}`;
-    if (!(r.farm.net_usd >= r.farm.gas_usd)) return `${r.slug} has a net farm cost below its gas cost`;
+    if (Math.abs(r.farm.net_usd - (r.farm.gas_usd + r.farm.opportunity_usd)) > 0.011) return `${r.slug} has a net farm cost that is not gas plus opportunity cost`;
   }
   return null;
 }

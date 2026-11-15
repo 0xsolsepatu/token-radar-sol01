@@ -31,26 +31,26 @@ Blind validation, computed at run time by the entry's own code:
 
 | test | curve only | curve + category | flat multiple |
 |---|---|---|---|
-| leave-one-out, median miss | 3.40x | 3.63x | 4.86x |
+| leave-one-out, median miss | 3.40x | 3.63x | 5.07x |
 | leave-one-out, within 3x | 42% | 44% | 35% |
-| time split (fit 63 older, test 32 newer), median miss | 2.88x | 3.33x | 4.78x |
-| time split, within 3x | 50% | 44% | 28% |
+| time split (fit 63 older, test 32 newer), median miss | 2.88x | 3.33x | 5.38x |
+| time split, within 3x | 50% | 44% | 34% |
 
 The curve beats a flat multiple on every line, but a median miss near 3x is a rough anchor, not a price — the dashboard says so on every row.
 
-Every farm plan is costed for a $1,000 slice over 90 days: 14 transactions at stated per-chain gas prices plus the opportunity cost of the capital at a 4.2% T-bill yield ($10.36), netted into a verdict — FARM if the net cost is ≤ $30 and the quality signal is strong, THIN if ≤ $80, otherwise SKIP. Verdicts across the board: FARM 66, THIN 105, SKIP 27. The 40 watchlist rows carry protocol-specific steps researched from public sources (12 with a live points program, 6 with a token already trading, 22 yield-only — each row cites its page); the 158 early rows use the template plan. Three rows are SKIP by access, not by cost: Lightning Network, Valos and Galaxy Curation.
+Every farm plan is costed for a $1,000 slice over 90 days: up to 14 transactions at stated per-chain gas prices (hold-only positions cost no weekly transactions) plus the opportunity cost of the capital at a 4.2% T-bill yield ($10.36), netted into a verdict — FARM if the net cost is ≤ $30 and the quality signal is strong, THIN if ≤ $80, otherwise SKIP. Verdicts across the board: FARM 83, THIN 85, SKIP 30. The 40 watchlist rows carry protocol-specific steps researched from public sources (10 with a live points program, 6 with a token already trading, 24 yield-only — each row cites its page); the 158 early rows use the template plan. Six rows are SKIP by access, not by cost: Lightning Network, Valos, Galaxy Curation, OpenTrade, b14g and Curvance.
 
 The board covers all 40 watchlist protocols plus every other rankable pre-token protocol (158 early rows) under the house rule in RULES.txt line 206, and shows the 416 live-token protocols and the 144 set aside by that rule on their own tabs. Wrapped, staked and bridged products of tokens that already trade (WBTC, Binance staked ETH, USDT0 and the like) are never ranked: they are not protocols waiting on a launch. Nothing here predicts whether or when a token is issued, and "records no token" is never written as "has no token".
 
 ## Enrichment (build time only)
 
-The graded run is deterministic and offline — it reads only the snapshot and the static files in this repo. At build time (2026-11-15) extra public sources were fetched and baked into `data/enrichment.json` (120,982 bytes, 758 entries — minified JSON, same content), and the 40 watchlist farm plans were researched from public sources (see REPORT.md):
+The graded run is deterministic and offline — it reads only the snapshot and the static files in this repo. At build time (2026-11-15) extra public sources were fetched and baked into `data/enrichment.json` (148,574 bytes, 758 entries — minified JSON, same content), and the 40 watchlist farm plans were researched from public sources (see REPORT.md):
 
-- **DefiLlama Fees API** — fees for 444 of 758 protocols (108 of 198 board rows, 26 of 40 watchlist). A second fundamentals signal beside TVL; shown per row as fees 30d / 7d / all-time.
+- **DefiLlama Fees API** — fees for 444 of 758 protocols (112 of 198 board rows, 26 of 40 watchlist). A second fundamentals signal beside TVL; shown per row as fees 30d / 7d / all-time.
 - **CoinGecko public API** — 42 protocols checked (40 watchlist + 2); a round-2 re-check verified **6 native tokens live: MEZO, TAO, PLUME, XDP, B2, USDD** (stablecoin product token only). INFI not verified — TGE targeted Q4 2026.
-- **CryptoRank public pages** — fundraising pages for 3 of 40 watchlist (Gauntlet: $169.63M total raised, verified against DefiLlama; Polymarket: $3.87B shown as reported, unverified; **Saturn: $2.80M, verified against the BTCC/PANews roundup**). RootData was blocked by a bot wall; Token Terminal public vault-token pages cover 2 of 40 (Saturn satUSDC, Keyrock kUSDC); Artemis needs a login. Nothing was invented — missing data stays null, and no quest or points program is claimed without a public source.
+- **CryptoRank public pages + Firecrawl deep research (radar-6)** — fundraising pages for 5 of 40 watchlist (Gauntlet: $169.63M total raised, verified against DefiLlama; **Saturn: $2.80M, verified against the BTCC/PANews roundup**; Hyperithm: $11M Series B, verified) and funding totals for 19 of 40 (12 verified against a second source). Radar-6 counted 6 fundraising pages by conflating page types; radar-7 corrects it to 5 /ico/ pages (OpenTrade, Veda and infiniFi have funding data but no /ico/ page). Polymarket was **corrected in radar-6 to ~$2.245B verified** (Series B $45M + ~$200M 2025 + up to $2B ICE strategic) — the CryptoRank $3.87B figure was unreconcilable with public rounds. New totals in radar-6: Ember $5.3M, Firelight $8M, Keyrock $72M confirmed (+ Series C undisclosed), Lagoon $80M (single source), Lofty $5M. RootData was blocked by a bot wall; Token Terminal public vault-token pages cover 2 of 40 (Saturn satUSDC, Keyrock kUSDC); Artemis needs a login. Nothing was invented — missing data stays null, and no quest or points program is claimed without a public source.
 
-A funding anchor is displayed where one exists but is never a model input: Gauntlet and Saturn have verified totals, and a raise factor would move one row by ≤ 5% — noise, not signal.
+A funding anchor is displayed where one exists but is never a model input: a radar-6 spot test found log total raised correlates r=0.66 with the curve residual on 9 traded tokens (p≈0.05) — suggestive, not significant, and untestable at full scale without funding data for all 128 traded tokens.
 
 ## Layout
 

@@ -94,6 +94,6 @@ writeFileSync(join(out, 'dossier.json'), buildDossier(out, { text_max_bytes: TEX
 
 process.stdout.write(
   `token radar: ${snapshot.protocols.length} protocols, ${snapshot.watchlist.length} on the watchlist, ${board.length} rows scored (${radar.early_size} early, ${radar.live_size} live, ${radar.set_aside_size} set aside, ${radar.traded_size} traded in the curve)\n` +
-    `token radar: curve log10(mcap) = ${radar.curve.a} + ${radar.curve.b} * log10(tvl), R2 ${radar.curve.r2}; LOO median miss ${radar.backtest.loo_curve_category.median_miss}x (flat ${radar.backtest.loo_flat.median_miss}x), time-split ${radar.backtest.time_split_curve.median_miss}x (flat ${radar.backtest.time_split_flat.median_miss}x)\n` +
+    `token radar: curve log10(mcap) = ${radar.curve.a} + ${radar.curve.b} * log10(tvl), R2 ${radar.curve.r2}; LOO curve+category ${radar.backtest.loo_curve_category.median_miss}x (curve-only ${radar.backtest.loo_curve.median_miss}x; flat ${radar.backtest.loo_flat.median_miss}x), time-split curve+category ${radar.backtest.time_split_curve_category.median_miss}x (curve-only ${radar.backtest.time_split_curve.median_miss}x; flat ${radar.backtest.time_split_flat.median_miss}x)\n` +
     `token radar: wrote ${join(out, 'board.json')}, ${join(out, 'data.js')}, ${join(out, 'dashboard')} (${dashboardFiles.length} files), ${join(out, 'screenshots')} (${shots.length} images) and ${join(out, 'dossier.json')}\n`,
 );

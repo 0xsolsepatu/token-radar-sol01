@@ -1,5 +1,4 @@
-/* Token Radar's theme: a dark radar screen. One palette, two radii, two families; everything
-   else is spacing, a hairline and a type step. No network, no web fonts, no images. */
+/* Token Radar theme: a dark radar screen. No network, no web fonts, no images. */
 :root {
   --canvas: #0c1116;
   --surface: #131a21;
@@ -183,7 +182,8 @@ tbody tr[data-selected="true"] { background: rgba(242, 177, 60, 0.09); }
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
 
-/* radar-3 additions: farm verdicts, the scatter chart, and the method view. */
+/* Farm verdicts, the scatter chart, and the method view. */
+.pipe { width: 100%; height: auto; display: block; margin: 12px 0; }
 .verdict {
   display: inline-block; padding: 1px 8px; border-radius: 20px; font-size: 11px; font-weight: 650;
   letter-spacing: 0.04em; white-space: nowrap; font-family: var(--font-num);
