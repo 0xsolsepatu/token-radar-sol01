@@ -20,10 +20,14 @@
 // pre-token protocol on that curve, with one shrunken category prior: the median log-residual of
 // the traded tokens in the protocol's category, used only where at least 3 traded comparables
 // exist, shrunk by n/(n+3) and clamped to +-0.5 dex (a factor of 0.32x to 3.16x). Growth, age and
-// chain breadth are shown for every row but are NOT multiplied into the value: blind testing
-// showed they do not improve prediction out of sample (see backtest below), so they are context,
-// not levers. The model never predicts whether or when a token is issued: it prices the
-// protocol as it stands.
+// chain breadth are shown for every row but are NOT multiplied into the curve value: blind
+// testing showed they do not improve prediction out of sample (see backtest below), so they are
+// context, not levers, for the curve. The board ranks by EXPECTED value instead: the curve
+// value, times the share of snapshot protocols in the row's age band that record a token
+// (the peers' launch odds). That is an expected-value weighting — value-if-a-token-lists
+// times the chance one ever lists — not a claim that odds improve the curve's prediction
+// of market cap: the curve backtest is unchanged and reported as it is. The model never
+// predicts whether or when a token is issued: it prices the protocol as it stands.
 //
 // The curve is weak and the board says so. On the snapshot's own traded tokens the curve's
 // leave-one-out median miss is about 3.6x for the curve-plus-category board (3.4x
@@ -113,8 +117,8 @@ export const MODEL: ModelConstants = {
   slice_usd: 1000,
   tbill_yield: 0.042,
   horizon_days: 90,
-  farm_cost_farm_usd: 30,
-  farm_cost_thin_usd: 80,
+  farm_cost_farm_usd: 13,
+  farm_cost_thin_usd: 16,
   gas_usd: {
     ethereum: 2.5,
     base: 0.05,
@@ -213,7 +217,7 @@ function drawBootstrapSample(traded: SnapshotProtocol[], rng: () => number): { s
 }
 
 /** The model's version label: the dashboard names it. */
-export const MODEL_VERSION = 'radar-7';
+export const MODEL_VERSION = 'radar-9';
 
 /** A costed farm step: the action, its transactions on one chain, and its minutes. */
 export interface FarmStep {
@@ -240,6 +244,13 @@ export interface BoardRow {
   watchlist: boolean;
   age_days: number | null;
   implied_value_usd: number;
+  /** Expected value: implied value times the row's launch odds (age-band share of peers that record a token). The board ranks by this. */
+  expected_value_usd: number;
+  /** The launch-odds multiplier this row's expected value uses (age-band share; the no-date group's share when the listing date is unknown). */
+  launch_odds: number;
+  /** Middle 50% of the bootstrap refits, times the launch odds: the expected-value band. */
+  expected_low_usd: number;
+  expected_high_usd: number;
   /** Rank by the curve alone (no category factor) — the same order as TVL, since the curve is monotone in TVL. */
   rank_curve_only: number;
   /** Rank by the flat median multiple — likewise the TVL order. */
@@ -252,6 +263,8 @@ export interface BoardRow {
     curve_b: number;
     category_adjustment_dex: number;
     category_factor: number;
+    /** Full-precision category factor (unrounded) so the dashboard can recompute the row exactly. */
+    category_factor_full: number;
     category_comparables: number;
     category_source: string;
     growth_pct: number | null;
@@ -272,6 +285,8 @@ export interface BoardRow {
     minutes: number;
     txs: number;
     verdict: 'FARM' | 'THIN' | 'SKIP';
+    /** True when the slice cannot enter at all (permissioned vault, exploited route, routing node): the plan costs nothing because it never deploys. */
+    access_skip: boolean;
   };
   fees_30d_usd: number | null;
   fees_7d_usd: number | null;
@@ -297,7 +312,12 @@ export interface RadarRow {
   mcap_usd: number | null;
   listed_at: string | null;
   age_days: number | null;
+  /** This row's launch-odds multiplier (age-band share; the no-date group's share when the listing date is unknown). Never null: every row has a peer group. */
+  launch_odds: number;
+  launch_odds_band: string;
   implied_value_usd: number;
+  /** Expected value: implied value times launch odds. The board ranks by this. */
+  expected_value_usd: number;
   curve_value_usd: number;
   category_factor: number;
   category_comparables: number;
@@ -311,6 +331,7 @@ export interface RadarRow {
   farm_minutes: number;
   farm_txs: number;
   farm_verdict: 'FARM' | 'THIN' | 'SKIP';
+  farm_access_skip: boolean;
   fees_30d_usd: number | null;
   fees_7d_usd: number | null;
   fees_all_time_usd: number | null;
@@ -320,6 +341,9 @@ export interface RadarRow {
   news: Enrichment['news'];
   implied_low_usd: number;
   implied_high_usd: number;
+  /** Middle 50% of the bootstrap refits, times the launch odds: the expected-value band. */
+  expected_low_usd: number;
+  expected_high_usd: number;
   mechanism: string;
   neighbours: BoardRow['neighbours'];
   rank_curve_only: number;
@@ -419,10 +443,15 @@ export interface RadarData {
   set_aside_size: number;
   traded_size: number;
   curve: { a: number; b: number; r2: number; resid_sd_dex: number; n: number; flat_multiple: number };
+  /** Full-precision curve params (unrounded a/b) so the dashboard can recompute every row exactly. */
+  curve_full: { a: number; b: number };
   backtest: Backtest;
   category_adjustments: CategoryAdjustment[];
   /** Rank stability: how many of the shipped top 10 move under the curve-only or flat ranking. */
   rank_stability: { top10_moved: number; top10_max_move: number };
+  /** Launch odds per age band (the expected-value multiplier) and the protocols with no listing date. */
+  launch_odds_bands: LaunchOddsBand[];
+  launch_odds_unknown: { n: number; with_token: number; pre_token: number; share: number };
   rows: RadarRow[];
   live: LiveRow[];
   set_aside: SetAsideRow[];
@@ -483,6 +512,79 @@ export function ageDays(asOf: string, listedAt: string | null): number | null {
 /** Whether a protocol records no token at all (no CoinGecko id, no symbol). */
 export function isPreToken(p: SnapshotProtocol): boolean {
   return p.gecko_id === null && p.symbol === null;
+}
+
+/** One age band's launch share: of the snapshot protocols first listed in this band, the share that records a token. Cross-sectional and descriptive only — never a value input. */
+export interface LaunchOddsBand {
+  band: string;
+  months_lo: number;
+  months_hi: number | null;
+  n: number;
+  with_token: number;
+  share: number;
+}
+
+const LAUNCH_ODDS_BANDS: Array<[string, number, number | null]> = [
+  ['0–6 months', 0, 6],
+  ['6–12 months', 6, 12],
+  ['12–24 months', 12, 24],
+  ['24+ months', 24, null],
+];
+
+/** The band label for an age in days (30.44 days = one month); null when the listing date is unknown. */
+export function bandForAgeDays(ageDays: number | null): string | null {
+  if (ageDays === null) return null;
+  const m = ageDays / 30.44;
+  for (const [label, lo, hi] of LAUNCH_ODDS_BANDS) {
+    if (m >= lo && (hi === null || m < hi)) return label;
+  }
+  return null;
+}
+
+/**
+ * Launch odds per age band, computed at run time from the snapshot only: for every protocol
+ * with a known listing date, the share in its band that records a token (a CoinGecko id or a
+ * symbol on record). Protocols with no listing date are counted separately and excluded from
+ * the bands; their own group's share is reported as unknown_share. The share rises with age
+ * in this snapshot — it is a cross-sectional share, not a hazard rate. Radar-9 multiplies
+ * the implied value by the row's band share to rank by expected value (value-if-a-token-
+ * lists times the chance one ever lists); it does NOT multiply anything into the curve
+ * value, and the curve backtest is unchanged.
+ */
+export function launchOddsBands(snapshot: Snapshot): { bands: LaunchOddsBand[]; unknown_n: number; unknown_with_token: number; unknown_pre_token: number; unknown_share: number } {
+  const bands: LaunchOddsBand[] = LAUNCH_ODDS_BANDS.map(([band, lo, hi]) => ({ band, months_lo: lo, months_hi: hi, n: 0, with_token: 0, share: 0 }));
+  let unknown_n = 0, unknown_with_token = 0, unknown_pre_token = 0;
+  for (const p of snapshot.protocols) {
+    const hasToken = !isPreToken(p);
+    const age = ageDays(snapshot.as_of, p.listed_at);
+    if (age === null) {
+      unknown_n++;
+      if (hasToken) unknown_with_token++;
+      else unknown_pre_token++;
+      continue;
+    }
+    const band = bands.find((b) => b.band === bandForAgeDays(age));
+    if (band === undefined) continue;
+    band.n++;
+    if (hasToken) band.with_token++;
+  }
+  for (const b of bands) b.share = b.n === 0 ? 0 : Math.round((b.with_token / b.n) * 1e4) / 1e4;
+  const unknown_share = unknown_n === 0 ? 0 : Math.round((unknown_with_token / unknown_n) * 1e4) / 1e4;
+  return { bands, unknown_n, unknown_with_token, unknown_pre_token, unknown_share };
+}
+
+/**
+ * One row's launch-odds multiplier and its band label: the age band's share, or the
+ * no-date group's share when the listing date is unknown (every row has a peer group).
+ * A second, age × 7-day-growth, odds term was computed and DROPPED (radar-9 research):
+ * 13 of the 20 age × growth cells hold fewer than 20 protocols (smallest cell n = 0),
+ * so the growth split has no support — age bands only.
+ */
+export function launchOddsFor(age: number | null, bands: LaunchOddsBand[], unknownShare: number): { odds: number; band: string } {
+  const label = bandForAgeDays(age);
+  if (label === null) return { odds: unknownShare, band: 'age unknown' };
+  const band = bands.find((b) => b.band === label);
+  return { odds: band === undefined ? unknownShare : band.share, band: label };
 }
 
 /** DefiLlama's version-marker rule: a name ending in a release is a pool of another protocol. */
@@ -1361,8 +1463,8 @@ export const FARM_PROGRAMS: Record<string, FarmProgram> = {
  * carries its transactions on the protocol's main chain and its minutes; gas is priced from the
  * model's stated table and the opportunity cost of the slice is priced against a T-bill yield.
  * The verdict is a cost-and-quality screen, not a promised return: FARM when the net cost is at
- * most $30 and the protocol shows real usage (TVL of at least $50M, or at least $10M with fees),
- * THIN when the net cost is at most $80 and some usage exists, SKIP otherwise — unless the
+ * most $13 and the protocol shows real usage (TVL of at least $50M, or at least $10M with fees),
+ * THIN when the net cost is at most $16 and some usage exists, SKIP otherwise — unless the
  * row's researched program overrides it (the slice cannot enter at all). No step claims a
  * quest, a points program or a reward the protocol has not published: the 40 watchlist rows
  * use the researched programs in FARM_PROGRAMS (each citing its public source), and the other
@@ -1375,7 +1477,7 @@ export function farmPlan(
   age: number | null,
   fees30d: number | null,
   model: ModelConstants = MODEL,
-): { steps: FarmStep[]; gas_usd: number; opportunity_usd: number; net_usd: number; minutes: number; txs: number; verdict: 'FARM' | 'THIN' | 'SKIP'; mechanism: string } {
+): { steps: FarmStep[]; gas_usd: number; opportunity_usd: number; net_usd: number; minutes: number; txs: number; verdict: 'FARM' | 'THIN' | 'SKIP'; mechanism: string; access_skip: boolean } {
   const program = FARM_PROGRAMS[p.slug];
   // Costing policy (radar-7): gas is priced on the chain where the plan's steps
   // execute — the researched program's chain where one is stated, else the
@@ -1434,7 +1536,7 @@ export function farmPlan(
   // riskiest ones (perps, prediction) never earn FARM on cost alone — a plan
   // with no yield, or a leveraged bet, is not a farm.
   if (verdict === 'FARM' && ['payments', 'governance', 'chain-apps', 'perps', 'prediction'].includes(mechKey)) verdict = 'THIN';
-  return { steps, gas_usd: gas, opportunity_usd: opportunity, net_usd: net, minutes, txs, verdict, mechanism };
+  return { steps, gas_usd: gas, opportunity_usd: opportunity, net_usd: net, minutes, txs, verdict, mechanism, access_skip: skipByAccess };
 }
 
 /** One costed step as one string: its action, then its cost and time, within 20..600 characters. */
@@ -1477,16 +1579,25 @@ export function buildBoard(
     const plan = farmPlan(p, v.age, fees30d, model);
     return { p, v, enr, plan };
   });
-  scored.sort((a, b) => b.v.implied - a.v.implied || (a.p.slug < b.p.slug ? -1 : a.p.slug > b.p.slug ? 1 : 0));
+  // Radar-9 (H1): the board ranks by expected value — the curve value times the row's
+  // launch odds (age-band share of peers that record a token; the no-date group's share
+  // when the listing date is unknown). The curve value, the backtest and the farm verdicts
+  // are untouched: only the ranking changes.
+  const odds = launchOddsBands(snapshot);
+  const withEv = scored.map((s) => {
+    const o = launchOddsFor(s.v.age, odds.bands, odds.unknown_share);
+    return { ...s, odds: o.odds, expected: Math.max(1, Math.round(s.v.implied * o.odds)) };
+  });
+  withEv.sort((a, b) => b.expected - a.expected || (a.p.slug < b.p.slug ? -1 : a.p.slug > b.p.slug ? 1 : 0));
   // Rank stability (radar-7): the same rows ranked by the curve alone and by the
   // flat median multiple. Both are monotone in TVL, so they agree with each other
   // and differ from the shipped rank only where the category factor moves a row.
   const slugCmp = (a: { slug: string }, b: { slug: string }): number => (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0);
   const rankCurveOnly = new Map<string, number>(
-    [...scored].sort((a, b) => b.v.curve - a.v.curve || slugCmp(a.p, b.p)).map((s, i) => [s.p.slug, i + 1] as [string, number]),
+    [...withEv].sort((a, b) => b.v.curve - a.v.curve || slugCmp(a.p, b.p)).map((s, i) => [s.p.slug, i + 1] as [string, number]),
   );
   const rankFlat = new Map<string, number>(
-    [...scored].sort((a, b) => b.p.tvl_usd - a.p.tvl_usd || slugCmp(a.p, b.p)).map((s, i) => [s.p.slug, i + 1] as [string, number]),
+    [...withEv].sort((a, b) => b.p.tvl_usd - a.p.tvl_usd || slugCmp(a.p, b.p)).map((s, i) => [s.p.slug, i + 1] as [string, number]),
   );
   const traded = tradedTokens(snapshot);
   const neighboursFor = (tvl: number): BoardRow['neighbours'] =>
@@ -1494,7 +1605,7 @@ export function buildBoard(
       .sort((a, b) => Math.abs(Math.log10(a.tvl_usd) - Math.log10(tvl)) - Math.abs(Math.log10(b.tvl_usd) - Math.log10(tvl)) || slugCmp(a, b))
       .slice(0, 3)
       .map((p) => ({ slug: p.slug, name: p.name, tvl_usd: p.tvl_usd, mcap_usd: p.mcap_usd!, multiple: round4(p.mcap_usd! / p.tvl_usd) }));
-  const board: BoardRow[] = scored.map((s, i) => ({
+  const board: BoardRow[] = withEv.map((s, i) => ({
     rank: i + 1,
     slug: s.p.slug,
     name: s.p.name,
@@ -1510,6 +1621,11 @@ export function buildBoard(
     watchlist: snapshot.watchlist.includes(s.p.slug),
     age_days: s.v.age,
     implied_value_usd: s.v.implied,
+    expected_value_usd: s.expected,
+    launch_odds: s.odds,
+    // Patched by buildRadar with the bootstrap band times the odds; the point value stands in until then.
+    expected_low_usd: s.expected,
+    expected_high_usd: s.expected,
     rank_curve_only: rankCurveOnly.get(s.p.slug)!,
     rank_flat: rankFlat.get(s.p.slug)!,
     neighbours: neighboursFor(s.p.tvl_usd),
@@ -1519,6 +1635,7 @@ export function buildBoard(
       curve_b: round4(fit.b),
       category_adjustment_dex: round4(s.v.categoryAdjustmentDex),
       category_factor: round4(s.v.categoryFactor),
+      category_factor_full: s.v.categoryFactor,
       category_comparables: s.v.categoryComparables,
       category_source: s.v.categorySource,
       growth_pct: s.p.change_7d === null ? null : round4(s.p.change_7d),
@@ -1538,6 +1655,7 @@ export function buildBoard(
       minutes: s.plan.minutes,
       txs: s.plan.txs,
       verdict: s.plan.verdict,
+      access_skip: s.plan.access_skip,
     },
     fees_30d_usd: s.enr?.fees?.fees_30d_usd ?? null,
     fees_7d_usd: s.enr?.fees?.fees_7d_usd ?? null,
@@ -1590,7 +1708,8 @@ export function setAsideRows(snapshot: Snapshot): SetAsideRow[] {
 }
 
 /** A board row's compact form for data.js: the numbers and the farm plan the page renders. */
-export function radarRow(row: BoardRow, watchlist: Set<string>): RadarRow {
+export function radarRow(row: BoardRow, watchlist: Set<string>, oddsBands?: LaunchOddsBand[] | null): RadarRow {
+  const band = oddsBands === undefined || oddsBands === null ? null : oddsBands.find((b) => b.band === bandForAgeDays(row.age_days)) ?? null;
   return {
     rank: row.rank,
     slug: row.slug,
@@ -1602,9 +1721,13 @@ export function radarRow(row: BoardRow, watchlist: Set<string>): RadarRow {
     mcap_usd: row.mcap_usd,
     listed_at: row.listed_at,
     age_days: row.age_days,
+    launch_odds: row.launch_odds,
+    launch_odds_band: band === null ? 'age unknown' : band.band,
     implied_value_usd: row.implied_value_usd,
+    expected_value_usd: row.expected_value_usd,
     curve_value_usd: row.model.curve_value_usd,
     category_factor: row.model.category_factor,
+    category_factor_full: row.model.category_factor_full,
     category_comparables: row.model.category_comparables,
     category_source: row.model.category_source,
     growth_pct: row.model.growth_pct,
@@ -1616,6 +1739,7 @@ export function radarRow(row: BoardRow, watchlist: Set<string>): RadarRow {
     farm_minutes: row.farm.minutes,
     farm_txs: row.farm.txs,
     farm_verdict: row.farm.verdict,
+    farm_access_skip: row.farm.access_skip,
     fees_30d_usd: row.fees_30d_usd,
     fees_7d_usd: row.fees_7d_usd,
     fees_all_time_usd: row.fees_all_time_usd,
@@ -1625,6 +1749,8 @@ export function radarRow(row: BoardRow, watchlist: Set<string>): RadarRow {
     news: row.news,
     implied_low_usd: row.model.implied_low_usd,
     implied_high_usd: row.model.implied_high_usd,
+    expected_low_usd: row.expected_low_usd,
+    expected_high_usd: row.expected_high_usd,
     mechanism: row.model.mechanism,
     neighbours: row.neighbours,
     rank_curve_only: row.rank_curve_only,
@@ -1645,14 +1771,20 @@ export function buildRadar(
   const live = liveRows(snapshot, enrichment);
   const setAside = setAsideRows(snapshot);
   const bt = backtest(snapshot, model);
+  // Launch odds (radar-9 H1): the peers' record per age band, computed from this snapshot.
+  // The board already ranks by expected value (implied x odds); the odds are the multiplier.
+  const odds = launchOddsBands(snapshot);
   // Radar-5: the bootstrap band per row — the same 200 refits as the backtest's
-  // stability block, so the band and the backtest can never disagree.
+  // stability block, so the band and the backtest can never disagree. Radar-9: the
+  // expected-value band is the implied band times the row's launch odds.
   const bands = bootstrapBands(snapshot, board, model);
   for (const row of board) {
     const band = bands.get(row.slug);
     if (band !== undefined) {
       row.model.implied_low_usd = band.low_usd;
       row.model.implied_high_usd = band.high_usd;
+      row.expected_low_usd = Math.max(1, Math.round(band.low_usd * row.launch_odds));
+      row.expected_high_usd = Math.max(1, Math.round(band.high_usd * row.launch_odds));
     }
   }
   const watchlistSet = new Set(snapshot.watchlist);
@@ -1678,10 +1810,13 @@ export function buildRadar(
     set_aside_size: setAside.length,
     traded_size: fit.n,
     curve: { a: round4(fit.a), b: round4(fit.b), r2: round4(fit.r2), resid_sd_dex: round4(fit.resid_sd_dex), n: fit.n, flat_multiple: round4(fit.flat_multiple) },
+    curve_full: { a: fit.a, b: fit.b },
     backtest: bt,
     category_adjustments: categoryAdjustmentRows,
     rank_stability: rankStability,
-    rows: board.map((r) => radarRow(r, watchlistSet)),
+    launch_odds_bands: odds.bands,
+    launch_odds_unknown: { n: odds.unknown_n, with_token: odds.unknown_with_token, pre_token: odds.unknown_pre_token, share: odds.unknown_share },
+    rows: board.map((r) => radarRow(r, watchlistSet, odds.bands)),
     live,
     set_aside: setAside,
     traded_points: tradedTokens(snapshot).map((p) => ({ slug: p.slug, name: p.name, category: p.category, tvl_usd: p.tvl_usd, mcap_usd: p.mcap_usd! })),
@@ -1775,15 +1910,19 @@ export function boardIssue(board: BoardRow[], snapshot: Snapshot): string | null
   const ranks = board.map((r) => r.rank).sort((a, b) => a - b);
   for (let i = 0; i < ranks.length; i++) if (ranks[i] !== i + 1) return `rank ${i + 1} is ${ranks[i]}`;
   for (let i = 0; i < board.length; i++) if (board[i]!.rank !== i + 1) return `row ${i + 1} carries rank ${board[i]!.rank}`;
-  for (let i = 1; i < board.length; i++) if (board[i]!.implied_value_usd > board[i - 1]!.implied_value_usd) return `row ${i + 1} outranks row ${i} on implied value`;
-  if (board.length >= 2 && board[0]!.implied_value_usd === board[board.length - 1]!.implied_value_usd) {
-    return `all ${board.length} rows share the same implied value $${board[0]!.implied_value_usd}: a board that ranks nothing by value is not a ranking`;
+  for (let i = 1; i < board.length; i++) if (board[i]!.expected_value_usd > board[i - 1]!.expected_value_usd) return `row ${i + 1} outranks row ${i} on expected value`;
+  if (board.length >= 2 && board[0]!.expected_value_usd === board[board.length - 1]!.expected_value_usd) {
+    return `all ${board.length} rows share the same expected value $${board[0]!.expected_value_usd}: a board that ranks nothing by value is not a ranking`;
   }
   for (const r of board) {
     const steps = r.farm_steps;
     if (steps.length < 3 || steps.length > 12) return `${r.slug} has ${steps.length} farm steps`;
     for (const s of steps) if (s.length < 20 || s.length > 600) return `${r.slug} has a farm step of ${s.length} characters`;
     if (!Number.isSafeInteger(r.implied_value_usd) || r.implied_value_usd <= 0) return `${r.slug} has implied value ${r.implied_value_usd}`;
+    if (!Number.isSafeInteger(r.expected_value_usd) || r.expected_value_usd <= 0) return `${r.slug} has expected value ${r.expected_value_usd}`;
+    if (!(r.launch_odds > 0 && r.launch_odds <= 1)) return `${r.slug} has launch odds ${r.launch_odds}`;
+    if (r.expected_value_usd !== Math.max(1, Math.round(r.implied_value_usd * r.launch_odds))) return `${r.slug} has an expected value that is not its implied value times its launch odds`;
+    if (r.expected_low_usd > r.expected_value_usd || r.expected_value_usd > r.expected_high_usd) return `${r.slug} has an expected-value band that does not contain its expected value`;
     if (!['FARM', 'THIN', 'SKIP'].includes(r.farm.verdict)) return `${r.slug} has farm verdict ${r.farm.verdict}`;
     if (Math.abs(r.farm.net_usd - (r.farm.gas_usd + r.farm.opportunity_usd)) > 0.011) return `${r.slug} has a net farm cost that is not gas plus opportunity cost`;
   }

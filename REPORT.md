@@ -1222,3 +1222,16 @@ far has failed the blind gates. **Realistic expectation: low 90s at best,
 still short of the ~95.3% top-20 bar — unless the sentiment full test
 above adopts a follower input that passes both gates, which would be the
 first model change since radar-3.**
+
+## Radar-7 submission (round 2, 2026-11-15)
+
+- **User approval:** "Submit radar-7 sebagai round 2" (2026-11-15 ~21:00 WIB). Replaces the live round-1 entry (radar-4, submission `01a1def7-75fa-76fd-a3b4-45c79086030c`, commit `627ba9b8`).
+- **Sanity check:** fresh `main.ts` run exit 0, 198 rows, verdicts FARM 83 / THIN 85 / SKIP 30, dossier text 64,738 B, dossier.json 884,894 B; board byte-identical to the verified radar-7 run.
+- **Push (UTF-8 files):** commit `01d8f2369982621164ac170d3bc95003a258c385` on `0xsolsepatu/token-radar-sol01` (11 files: `.makefun/owner.json`, LICENSE, README.md, REPORT.md, dashboard/app.css, dashboard/app.js, dashboard/index.html, data/enrichment.json, lib/model.ts, main.ts, vendor/makefun-board.ts). Verified via GitHub API: HEAD = `01d8f236`, 14 files in tree. Sync record appended (`radar.muse-github-snapshot-sync.json`, 4 entries).
+- **Screenshots:** the 3 radar-7 PNGs in `screenshots/` are NEW files (1-board.png 190,587 B sha `84cc8a3a…`, 2-detail.png 230,690 B sha `f82ce9ad…`, 3-filtered.png 192,679 B sha `49058ef7…`) and differ from the radar-4 PNGs still in the repo at `01d8f236`. They must be uploaded via the cloud browser (github.com Add file → Upload files into `screenshots/`, one commit, as for radar-4) BEFORE submitting, so the submitted commit carries the radar-7 screenshots. Verify PNG sha256 match local files after upload.
+- **Bundle:** `~/workspace/makefun-tokenradar/transcripts-v2.tar.gz` (10,320,591 B, sha256 `a80287f41be9f0ac75d3a43e05bfe651aed26140cfd08b2b7fd7a70cee48d693`), 48 sessions (all 21 target radar sessions present: builder 16171c26, radar-4 c60d5d4b, radar-5 e1251506, radar-6 c1089f2a, radar-7 coordinator be8e405a + 12 skill agents + integrator ba40adea + recovery 55d3ad79, parent 44402e8d, submitter 79cafb4c). Usage rows: `muse-usage-v2.jsonl` (200 rows read, 116 attached; integrator has no usage rows — its run died in a VM restart before delivering; submitter's own rows not yet written at bundle time, same as radar-4).
+- **Kit check (worktree + bundle):** 13 passed, 0 failed, 6 skipped, 5 at submission — same shape as radar-4. thinking_reproduces 77.5% (2,981/3,842, ≥30% required; radar-4 was 66.2%), thinking_priced 116 records, thinking_revised lib/model.ts 54 messages / main.ts 5, all 48 sessions in window.
+- **Submit:** PENDING — run after the screenshot upload commit lands: `makefun submit --competition token-radar-01 --repo-url https://github.com/0xsolsepatu/token-radar-sol01 --commit <screenshot-commit-sha> --bundle transcripts-v2.tar.gz --keypair ~/.makefun/keypairs/https_make.fun.json --title token-radar-sol01` (Force_Last, round 2). Quota: 1 of 5 attempts used today, 19 total remaining. Deadline 2026-12-14T10:00:00Z.
+- **Submission id / claim code:** PENDING (fill in after submit, then add the Google Sheet row).
+
+Note: this section is local-only, added after the push. The submitted commit stays the screenshot commit, not `01d8f236`.

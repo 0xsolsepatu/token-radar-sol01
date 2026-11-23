@@ -1,0 +1,19 @@
+BUILD + VERIFY radar-8 for make.fun token-radar-01. The user has explicitly approved running the build and verification. Do NOT submit and do NOT push to GitHub — build + verify only, then report back for the submit decision.
+
+DESIGN DOC (spec — read it fully first): ~/workspace/makefun-tokenradar/radar-analysis/RADAR-8-DESIGN.md, §6 build+verify plan. Work from the round-3 work copy at ~/workspace/makefun-tokenradar/radar-round3-work/radar/.
+
+PLAN (from §6):
+1. Copy the work copy to a fresh dir ~/workspace/makefun-tokenradar/radar-v3/ and build there (keep radar-round3-work untouched as the fallback).
+2. Implement the TWO changes only, model untouched:
+   - Change 1 — Integrity strip on the cover: live-computed backtest + self-checks + one method line, on screenshot 1.
+   - Change 2 — Launch odds from the peers' record, DISPLAY ONLY: odds column = cross-sectional share per age band (0–6, 6–12, 12–24, 24+ months) of protocols in that band that record a token, computed at run time from the snapshot, with counts shown. State verbatim in Method that odds are NOT factored into the implied value. Do NOT claim "odds fall with age" — the cross-sectional share RISES with age; a falling-odds claim is a hazard-rate claim the snapshot (no launch dates) cannot support.
+3. Re-run the 16 Track 1 gates + the 6 new gates from the design doc. The backtest MUST reproduce exactly (LOO 3.6253x / TS 3.3275x / OOB 3.5518x) — any movement means a model file was touched by accident; stop and report it.
+4. Re-render the screenshots (Playwright) so they show the new strip + odds column (the old radar-7 screenshots must NOT ship).
+5. Dossier word audit (the Gemini Blocker 4 item from the round-3 notes).
+6. MODEL_VERSION: set to 'radar-8' in the work copy.
+7. Run `makefun check` with a REAL bundle (kit ~/workspace/makefun-tokenradar/token-radar-01-kit-new/ if it is the current one, else token-radar-01-kit/): the bundle must have usage rows attached and the correct run-record prompt — the round-3 blocker was a NULL run record (0 usage rows). If the bundle comes out without usage rows, say so plainly and do NOT claim it is submittable.
+8. README badges + About: prepare the README with the 3 live make.fun badges (do not push; the repo push happens only after the submit decision).
+
+CONSTRAINTS: do not touch any model file; do not fit anything on the test set; do not invent judge numbers (there is no local judge — report gate results only). If any gate fails, fix it if the fix is inside the design doc's scope, otherwise report the failure plainly.
+
+REPORT BACK: gate results (16 Track 1 + 6 new, pass/fail each), backtest numbers reproduced (exact or not), bundle validity (usage rows attached? run record prompt correct?), screenshots re-rendered (yes/no), dossier bytes, and your recommendation SUBMIT-READY or NOT with reasons. If the build cannot be verified, say so.

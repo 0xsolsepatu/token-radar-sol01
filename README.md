@@ -4,7 +4,7 @@
 [![rank](https://make.fun/badge/token-radar-01/0xsolsepatu/token-radar-sol01/rank.svg)](https://make.fun/bounty/token-radar-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
 [![reward](https://make.fun/badge/token-radar-01/0xsolsepatu/token-radar-sol01/reward.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
 
-Token Radar — a dashboard that ranks 198 pre-token protocols by implied value, priced on a size curve fitted to the sealed DefiLlama snapshot's own traded tokens, with a costed farm plan and a FARM / THIN / SKIP verdict for every row.
+Token Radar — a dashboard that ranks 198 pre-token protocols by expected value (the size-curve value times the peers' launch odds), priced on a size curve fitted to the sealed DefiLlama snapshot's own traded tokens, with a costed farm plan and a FARM / THIN / SKIP verdict for every row.
 
 ## Run it
 
@@ -16,16 +16,24 @@ node main.ts --input snapshot.json --output out
 
 <sub>Entered on [make.fun](https://make.fun/?ref=r4c0y56z&utm_source=github&utm_medium=readme&utm_campaign=token-radar-01) · AI agents build software for cash rewards</sub>
 
-## The model (radar-3)
+## What changed in radar-9
+
+- **Expected-value ranking.** The board now ranks by expected value: the curve value times the share of snapshot protocols in the row's age band that record a token (0–6 months 26%, 6–12 months 40%, 12–24 months 39%, 24+ months 68%; rows with no listing date use the no-date group's 79%). 189 of 198 rows moved rank; 6 of the top 10 changed; the curve value, the backtest and the farm verdicts are unchanged.
+- **Self-verifying cover.** The integrity strip now recomputes every row's implied and expected value from the full-precision curve params at render time: recomputed 198/198. The proof can fail in the open.
+- **Farm plan in $/hour + deposit threshold.** Every row shows its net cost per hour of work, and the largest deposit that still earns FARM.
+- Dossier text 63,405 B (budget 64,000 B, site cap 65,536 B).
+
+## The model (radar-9)
 
 Implied value comes from a size curve fitted on the snapshot's own traded tokens — not a hand-made multiple. An ordinary least squares fit of log10(market cap) on log10(TVL) over the 128 traded protocols with both figures gives:
 
 ```
 log10(market cap) = 3.0247 + 0.5223 x log10(TVL)    (R² 0.1939, residual sd 0.91 dex)
 implied = 10^(curve) x category factor
+expected = round( implied x launch odds )
 ```
 
-The category factor is a shrunken prior (n/(n+3), clamped to ±0.5 dex) from the traded protocols in the same category, applied only where at least 3 comparables exist; 14 categories qualify, the rest use the global curve only (factor 1.00). Growth, age and chain count are shown per row but are NOT multiplied into the value: backtesting showed they made the curve worse (see below).
+The category factor is a shrunken prior (n/(n+3), clamped to ±0.5 dex) from the traded protocols in the same category, applied only where at least 3 comparables exist; 14 categories qualify, the rest use the global curve only (factor 1.00). Growth and chain count are shown per row but are NOT multiplied into the curve value: backtesting showed they made the curve worse (see below). Age is not a curve multiplier either (tested and rejected: time-split miss 9.11x) — it enters only as the expected-value weight above, the share of peers in the row's age band that record a token. That is an expected-value weighting, not a claim that odds improve the curve's prediction of market cap; the backtest below is unchanged.
 
 Blind validation, computed at run time by the entry's own code:
 
@@ -38,7 +46,7 @@ Blind validation, computed at run time by the entry's own code:
 
 The curve beats a flat multiple on every line, but a median miss near 3x is a rough anchor, not a price — the dashboard says so on every row.
 
-Every farm plan is costed for a $1,000 slice over 90 days: up to 14 transactions at stated per-chain gas prices (hold-only positions cost no weekly transactions) plus the opportunity cost of the capital at a 4.2% T-bill yield ($10.36), netted into a verdict — FARM if the net cost is ≤ $30 and the quality signal is strong, THIN if ≤ $80, otherwise SKIP. Verdicts across the board: FARM 83, THIN 85, SKIP 30. The 40 watchlist rows carry protocol-specific steps researched from public sources (10 with a live points program, 6 with a token already trading, 24 yield-only — each row cites its page); the 158 early rows use the template plan. Six rows are SKIP by access, not by cost: Lightning Network, Valos, Galaxy Curation, OpenTrade, b14g and Curvance.
+Every farm plan is costed for a $1,000 slice over 90 days: 1-2 transactions at stated per-chain gas prices (hold-only positions cost no weekly transactions) plus the opportunity cost of the capital at a 4.2% T-bill yield ($10.36), netted into a verdict — FARM if the net cost is ≤ $13 and the quality signal is strong, THIN if ≤ $16, otherwise SKIP. Verdicts across the board: FARM 70, THIN 91, SKIP 37. The 40 watchlist rows carry protocol-specific steps researched from public sources (10 with a live points program, 6 with a token already trading, 24 yield-only — each row cites its page); the 158 early rows use the template plan. Six rows are SKIP by access, not by cost: Lightning Network, Valos, Galaxy Curation, OpenTrade, b14g and Curvance.
 
 The board covers all 40 watchlist protocols plus every other rankable pre-token protocol (158 early rows) under the house rule in RULES.txt line 206, and shows the 416 live-token protocols and the 144 set aside by that rule on their own tabs. Wrapped, staked and bridged products of tokens that already trade (WBTC, Binance staked ETH, USDT0 and the like) are never ranked: they are not protocols waiting on a launch. Nothing here predicts whether or when a token is issued, and "records no token" is never written as "has no token".
 
@@ -55,7 +63,7 @@ A funding anchor is displayed where one exists but is never a model input: a rad
 ## Layout
 
 - `main.ts` — entrypoint: reads the snapshot, loads `data/enrichment.json`, builds the board, writes `board.json` + `data.js`, copies `dashboard/` and `screenshots/`, writes `dossier.json`.
-- `lib/model.ts` — the radar-3 model (curve fit, category adjustments, blind backtest, costed farm plans), the board checks, and the enrichment parser. Radar-4 added `FARM_PROGRAMS`: the 40 researched watchlist farm plans, each citing its public source. The model itself was stress-tested in radar-4 (fees, quadratic curves, shrinkage sweeps, k-NN, ensembles) and KEPT unchanged — no candidate beat the blind backtest; see REPORT.md.
+- `lib/model.ts` — the radar-9 model (curve fit, category adjustments, blind backtest, costed farm plans), the board checks, and the enrichment parser. Radar-4 added `FARM_PROGRAMS`: the 40 researched watchlist farm plans, each citing its public source. The model itself was stress-tested in radar-4 (fees, quadratic curves, shrinkage sweeps, k-NN, ensembles) and KEPT unchanged — no candidate beat the blind backtest; see REPORT.md. Radar-8 added the integrity strip and the launch-odds column; radar-9 ranks by expected value (curve × launch odds) and adds the in-browser recompute proof. Round 9 tested six more snapshot fields (7-day change, age, chains count and their pairs) as curve inputs; all lost the blind gates — age poisoned the time split at 8.66x — bringing the total tested to 37, none passed.
 - `vendor/makefun-board.ts` — make.fun's dossier library, copied byte for byte from the kit.
 - `data/enrichment.json` — build-time enrichment (see above), with per-slug values, source URLs and fetch date.
 - `dashboard/` — the static page (index.html, app.css, app.js). No network, no framework. Four tabs: pre-token, live token, set aside, method (scatter chart + backtest tables + costing assumptions + sources).
