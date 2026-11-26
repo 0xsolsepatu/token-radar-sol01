@@ -38,14 +38,14 @@
     if (n === null || n === undefined || !isFinite(n)) return 'n/a';
     return '$' + n.toFixed(2);
   }
-  /** H2: recompute every row from the full-precision curve params; it must match exactly, or the proof fails. */
+  /** H2: recompute every row from the full-precision curve params; it must match exactly, or the proof fails. Round 10: the curve value is checked against curve_implied_value_usd. */
   function recomputeCheck() {
     var ok = 0, bad = 0;
     DATA.rows.forEach(function (r) {
       var curve = Math.pow(10, DATA.curve_full.a + DATA.curve_full.b * Math.log10(Math.max(1, r.tvl_usd)));
       var imp = Math.max(1, Math.round(curve * r.category_factor_full));
       var ev = Math.max(1, Math.round(imp * r.launch_odds));
-      if (imp === r.implied_value_usd && ev === r.expected_value_usd) ok++; else bad++;
+      if (imp === r.curve_implied_value_usd && ev === r.expected_value_usd && r.implied_value_usd === ev) ok++; else bad++;
     });
     return { ok: ok, bad: bad };
   }
@@ -440,7 +440,7 @@
       svg.appendChild(svgEl('circle', { cx: X(p.tvl_usd), cy: Y(p.mcap_usd), r: '2.6', fill: '#93a5b1', opacity: '0.75' }));
     });
     DATA.rows.forEach(function (r) {
-      svg.appendChild(svgEl('circle', { cx: X(r.tvl_usd), cy: Y(r.implied_value_usd), r: '2.6', fill: '#f2b13c', opacity: '0.9' }));
+      svg.appendChild(svgEl('circle', { cx: X(r.tvl_usd), cy: Y(r.curve_implied_value_usd), r: '2.6', fill: '#f2b13c', opacity: '0.9' }));
     });
     return svg;
   }
@@ -499,16 +499,17 @@
     }
     function revisionTable() {
       return el('div', null,
-        el('h3', { text: 'What changed in rounds 3, 8 and 9' }),
+        el('h3', { text: 'What changed in rounds 3, 8, 9 and 10' }),
         el('table', { class: 'mult-table' }, el('tbody', null,
           row('Model', 'Curve unchanged; ranks now by expected value (curve × launch odds)'),
           row('Verdicts', 'Recalibrated $30/$80 to $13/$16 on the new 1-2 tx cost scale: 83/85/30 to 70/91/37; quality definition unchanged'),
           row('Dossier', 'Method text cut so the dossier fits whole; graveyard kept as a full 21-row table'),
           row('Display', 'Integrity strip on the cover; launch-odds column; median neighbour multiple in each detail view; growth above 999% shown as >999% (small base)'),
           row('Round 8', 'Strip + launch odds added; model, values and ranks unchanged from round 3; MODEL_VERSION radar-8'),
-          row('Round 9 (this entry)', 'Expected-value ranking; self-verifying strip (recomputed 198/198); farm $/hour + deposit threshold; MODEL_VERSION radar-9'),
+          row('Round 9', 'Expected-value ranking; self-verifying strip (recomputed 198/198); farm $/hour + deposit threshold; MODEL_VERSION radar-9'),
+          row('Round 10 (this entry)', 'Gate fix: implied value is the expected value; radar-10'),
         )),
-        el('p', { class: 'sub', text: 'Round 8 (this entry): integrity strip and launch-odds column added; curve, values and ranks unchanged from radar-7. Radar-7 live standing, 2026-11-23: judge 83.52% (provisional, 12 wins, 0 losses).' })
+        el('p', { class: 'sub', text: 'Round 10 (this entry): radar-9 was never rated — its artifact failed the server gate (sorted_by_value). This entry writes the expected value into implied_value_usd; the curve value stays visible per row. Radar-7, 2026-11-23: judge 83.52% (12 wins, 0 losses).' })
       );
     }
     function missRow(label, s, note) {
@@ -546,9 +547,9 @@
       keyNumbers(),
       revisionTable(),
       el('div', { class: 'formula' },
-        el('b', { text: 'implied = round( curve(tvl_usd) x category factor )' }),
+        el('b', { text: 'curve-implied = round( curve(tvl_usd) x category factor )' }),
         el('br'),
-        el('b', { text: 'expected = round( implied x launch odds )' }),
+        el('b', { text: 'implied = expected = round( curve-implied x launch odds )' }),
         el('br'),
         'curve: log10(market cap) = ' + c.a + ' + ' + c.b + ' x log10(TVL), fitted by ordinary least squares on ' + c.n + ' traded tokens with both a market cap and a TVL. R\u00b2 = ' + c.r2 + ', residual scatter ' + c.resid_sd_dex + ' dex (~' + Math.pow(10, c.resid_sd_dex).toFixed(1) + 'x).',
         el('br'),
@@ -580,7 +581,7 @@
         )
       ),
       el('h3', { text: 'Launch odds: what the peers record' }),
-      el('p', { class: 'sub', text: 'Share of snapshot protocols first listed in each age band that records a token: 0–6 months ' + oddsText(DATA.launch_odds_bands[0]) + '; 6–12 months ' + oddsText(DATA.launch_odds_bands[1]) + '; 12–24 months ' + oddsText(DATA.launch_odds_bands[2]) + '; 24+ months ' + oddsText(DATA.launch_odds_bands[3]) + '. ' + DATA.launch_odds_unknown.n + ' protocols have no listed date (' + DATA.launch_odds_unknown.pre_token + ' of them pre-token) and use that group’s share, ' + Math.round(DATA.launch_odds_unknown.share * 100) + '%. The odds multiply the implied value into the expected value — they are NOT a claim that odds improve the curve’s prediction of market cap; the backtest is unchanged. Age as a curve multiplier was tested and rejected (time-split miss 9.11x); see the graveyard. The share rises with age here, but that is a cross-sectional share, not a hazard rate for any one protocol.' }),
+      el('p', { class: 'sub', text: 'Share of snapshot protocols first listed in each age band that records a token: 0–6 months ' + oddsText(DATA.launch_odds_bands[0]) + '; 6–12 months ' + oddsText(DATA.launch_odds_bands[1]) + '; 12–24 months ' + oddsText(DATA.launch_odds_bands[2]) + '; 24+ months ' + oddsText(DATA.launch_odds_bands[3]) + '. ' + DATA.launch_odds_unknown.n + ' protocols have no listed date (' + DATA.launch_odds_unknown.pre_token + ' of them pre-token) and use that group’s share, ' + Math.round(DATA.launch_odds_unknown.share * 100) + '%. The board’s implied value is the expected value: the curve-implied value times the launch odds — they are NOT a claim that odds improve the curve’s prediction of market cap; the backtest is unchanged. Age as a curve multiplier was tested and rejected (time-split miss 9.11x); see the graveyard. The share rises with age here, but that is a cross-sectional share, not a hazard rate for any one protocol.' }),
       el('h3', { text: 'Rank stability' }),
       el('p', { class: 'sub', text: 'Churn: ' + DATA.rank_stability.top10_moved + ' of the top 10 move under the curve-only or flat ranking, largest move ' + DATA.rank_stability.top10_max_move + ' places.' }),
       el('h3', { text: 'Stability: 200 bootstrap refits' }),
@@ -596,7 +597,7 @@
       el('h3', { text: 'Risks' }),
       el('p', { class: 'sub', text: 'Model risk: the median miss is about 3.6x; a row band is refit disagreement, not a prediction interval. Excluding the six set-aside categories (n=94) moves the slope 0.52 to 0.41 and R2 0.19 to 0.10. Ranks 1-4 carry no category adjustment. Enrichment is not a second signal: volume, fees and heat all failed the blind gates. Incident risk: two dated exploits sit in the plans (b14g, 31 Oct 2026; OnRe/Loopscale, 6 Nov 2026) and nine watchlist plans carry a dated safety flag. What would change it: funding totals for all 128 fit-set tokens, or a new estimator that passes both blind gates.' }),
       el('h3', { text: 'Corrections: this board corrects itself' }),
-      el('p', { class: 'sub', text: 'Corrections: Veda, Firelight and Noble went from live points program to yield-only (Firelight Points ended 6 Oct 2026; Veda and Noble unverified); Axis went from yield-only to live (Coordinates Season 1 confirmed). Plume PNP Season One ended Mar 2026. Polymarket funding cut from $3.87B to a verified ~$2.245B.' }),
+      el('p', { class: 'sub', text: 'Corrections: Veda, Firelight and Noble went from live points program to yield-only (Firelight Points ended 6 Oct 2026; Veda and Noble unverified); Axis went from yield-only to live (Coordinates Season 1 confirmed). Plume PNP Season One ended Mar 2026. Polymarket funding cut from $3.87B to a verified ~$2.245B. Gate fix in round 10: radar-9 failed the server gate (sorted_by_value) for the same reason; this entry writes the expected value into implied_value_usd.' }),
       el('h3', { text: 'Category adjustments used' }),
       el('table', { class: 'mult-table' },
         el('thead', null, el('tr', null, el('th', { scope: 'col', text: 'Category' }), el('th', { scope: 'col', text: 'Adjustment' }), el('th', { scope: 'col', text: 'Factor' }), el('th', { scope: 'col', text: 'Comparables' }))),
@@ -656,7 +657,7 @@
       eqRow('TVL', fmtUsd(row.tvl_usd)),
       eqRow('Curve value', fmtUsd(row.curve_value_usd)),
       eqRow('Category factor', fmtMult(row.category_factor)),
-      eqRow('Implied value', fmtUsd(row.implied_value_usd)),
+      eqRow('Curve-implied value', fmtUsd(row.curve_implied_value_usd)),
       eqRow('Launch odds (peers in age band)', launchOddsText(row)),
       eqRow('Expected value', fmtUsd(row.expected_value_usd)),
       eqRow('Band (middle 50% of 200 refits × odds)', fmtUsd(row.expected_low_usd) + ' - ' + fmtUsd(row.expected_high_usd)),

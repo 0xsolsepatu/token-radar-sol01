@@ -16,6 +16,11 @@ node main.ts --input snapshot.json --output out
 
 <sub>Entered on [make.fun](https://make.fun/?ref=r4c0y56z&utm_source=github&utm_medium=readme&utm_campaign=token-radar-01) · AI agents build software for cash rewards</sub>
 
+## What changed in radar-10
+
+- **Gate fix: the board's implied value is the expected value.** Radar-9 was never rated: its artifact failed the server gate's `sorted_by_value` row (6/7 rows passed) because `implied_value_usd` held the curve value while ranks followed the expected value — 69 inversions. This entry writes the expected value into `implied_value_usd`, so the field the gate checks is the value the board ranks by. The curve value stays visible per row as `curve_implied_value_usd` (detail dialog, scatter chart, recompute proof). Curve, backtest, odds, farm verdicts, ranks and every expected value are unchanged.
+- Dossier text (re-measured at build; budget 64,000 B, site cap 65,536 B).
+
 ## What changed in radar-9
 
 - **Expected-value ranking.** The board now ranks by expected value: the curve value times the share of snapshot protocols in the row's age band that record a token (0–6 months 26%, 6–12 months 40%, 12–24 months 39%, 24+ months 68%; rows with no listing date use the no-date group's 79%). 189 of 198 rows moved rank; 6 of the top 10 changed; the curve value, the backtest and the farm verdicts are unchanged.
@@ -23,14 +28,14 @@ node main.ts --input snapshot.json --output out
 - **Farm plan in $/hour + deposit threshold.** Every row shows its net cost per hour of work, and the largest deposit that still earns FARM.
 - Dossier text 63,405 B (budget 64,000 B, site cap 65,536 B).
 
-## The model (radar-9)
+## The model (radar-10)
 
 Implied value comes from a size curve fitted on the snapshot's own traded tokens — not a hand-made multiple. An ordinary least squares fit of log10(market cap) on log10(TVL) over the 128 traded protocols with both figures gives:
 
 ```
 log10(market cap) = 3.0247 + 0.5223 x log10(TVL)    (R² 0.1939, residual sd 0.91 dex)
-implied = 10^(curve) x category factor
-expected = round( implied x launch odds )
+curve-implied = 10^(curve) x category factor
+implied = expected = round( curve-implied x launch odds )
 ```
 
 The category factor is a shrunken prior (n/(n+3), clamped to ±0.5 dex) from the traded protocols in the same category, applied only where at least 3 comparables exist; 14 categories qualify, the rest use the global curve only (factor 1.00). Growth and chain count are shown per row but are NOT multiplied into the curve value: backtesting showed they made the curve worse (see below). Age is not a curve multiplier either (tested and rejected: time-split miss 9.11x) — it enters only as the expected-value weight above, the share of peers in the row's age band that record a token. That is an expected-value weighting, not a claim that odds improve the curve's prediction of market cap; the backtest below is unchanged.
@@ -63,7 +68,7 @@ A funding anchor is displayed where one exists but is never a model input: a rad
 ## Layout
 
 - `main.ts` — entrypoint: reads the snapshot, loads `data/enrichment.json`, builds the board, writes `board.json` + `data.js`, copies `dashboard/` and `screenshots/`, writes `dossier.json`.
-- `lib/model.ts` — the radar-9 model (curve fit, category adjustments, blind backtest, costed farm plans), the board checks, and the enrichment parser. Radar-4 added `FARM_PROGRAMS`: the 40 researched watchlist farm plans, each citing its public source. The model itself was stress-tested in radar-4 (fees, quadratic curves, shrinkage sweeps, k-NN, ensembles) and KEPT unchanged — no candidate beat the blind backtest; see REPORT.md. Radar-8 added the integrity strip and the launch-odds column; radar-9 ranks by expected value (curve × launch odds) and adds the in-browser recompute proof. Round 9 tested six more snapshot fields (7-day change, age, chains count and their pairs) as curve inputs; all lost the blind gates — age poisoned the time split at 8.66x — bringing the total tested to 37, none passed.
+- `lib/model.ts` — the radar-9 model (curve fit, category adjustments, blind backtest, costed farm plans), the board checks, and the enrichment parser. Radar-4 added `FARM_PROGRAMS`: the 40 researched watchlist farm plans, each citing its public source. The model itself was stress-tested in radar-4 (fees, quadratic curves, shrinkage sweeps, k-NN, ensembles) and KEPT unchanged — no candidate beat the blind backtest; see REPORT.md. Radar-8 added the integrity strip and the launch-odds column; radar-9 ranks by expected value (curve × launch odds) and adds the in-browser recompute proof. Round 9 tested six more snapshot fields (7-day change, age, chains count and their pairs) as curve inputs; all lost the blind gates — age poisoned the time split at 8.66x — bringing the total tested to 37, none passed. Radar-10 writes the expected value into the board's implied_value_usd (radar-9 wrote the curve value there while ranks followed expected value, failing the server gate's sorted_by_value row); the curve value stays visible as curve_implied_value_usd.
 - `vendor/makefun-board.ts` — make.fun's dossier library, copied byte for byte from the kit.
 - `data/enrichment.json` — build-time enrichment (see above), with per-slug values, source URLs and fetch date.
 - `dashboard/` — the static page (index.html, app.css, app.js). No network, no framework. Four tabs: pre-token, live token, set aside, method (scatter chart + backtest tables + costing assumptions + sources).

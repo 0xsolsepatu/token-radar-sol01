@@ -217,7 +217,7 @@ function drawBootstrapSample(traded: SnapshotProtocol[], rng: () => number): { s
 }
 
 /** The model's version label: the dashboard names it. */
-export const MODEL_VERSION = 'radar-9';
+export const MODEL_VERSION = 'radar-10';
 
 /** A costed farm step: the action, its transactions on one chain, and its minutes. */
 export interface FarmStep {
@@ -243,8 +243,11 @@ export interface BoardRow {
   token_status: 'pre-token';
   watchlist: boolean;
   age_days: number | null;
+  /** The board's implied value: the expected value (curve value times launch odds). The board ranks by this, so it is non-increasing in rank — the server gate's sorted_by_value row checks this field. */
   implied_value_usd: number;
-  /** Expected value: implied value times the row's launch odds (age-band share of peers that record a token). The board ranks by this. */
+  /** The curve-implied value before the odds multiplier (the pre-odds anchor, kept visible for the recompute proof, the scatter chart and the detail dialog). */
+  curve_implied_value_usd: number;
+  /** Expected value: the same as implied_value_usd — the curve-implied value times the row's launch odds (age-band share of peers that record a token). The board ranks by this. */
   expected_value_usd: number;
   /** The launch-odds multiplier this row's expected value uses (age-band share; the no-date group's share when the listing date is unknown). */
   launch_odds: number;
@@ -315,8 +318,11 @@ export interface RadarRow {
   /** This row's launch-odds multiplier (age-band share; the no-date group's share when the listing date is unknown). Never null: every row has a peer group. */
   launch_odds: number;
   launch_odds_band: string;
+  /** The board's implied value: the expected value (curve-implied value times launch odds). The board ranks by this. */
   implied_value_usd: number;
-  /** Expected value: implied value times launch odds. The board ranks by this. */
+  /** The curve-implied value before the odds multiplier (pre-odds anchor for the recompute proof and the scatter chart). */
+  curve_implied_value_usd: number;
+  /** Expected value: the same as implied_value_usd. The board ranks by this. */
   expected_value_usd: number;
   curve_value_usd: number;
   category_factor: number;
@@ -1583,6 +1589,11 @@ export function buildBoard(
   // launch odds (age-band share of peers that record a token; the no-date group's share
   // when the listing date is unknown). The curve value, the backtest and the farm verdicts
   // are untouched: only the ranking changes.
+  // Radar-10: the board's implied_value_usd IS the expected value. Radar-9 wrote the
+  // curve value into implied_value_usd while ranks followed the expected value, so
+  // implied_value_usd was not monotonic in rank (69 inversions) and the server gate's
+  // sorted_by_value row failed — the entry was never rated. The curve value stays
+  // visible as curve_implied_value_usd.
   const odds = launchOddsBands(snapshot);
   const withEv = scored.map((s) => {
     const o = launchOddsFor(s.v.age, odds.bands, odds.unknown_share);
@@ -1620,7 +1631,8 @@ export function buildBoard(
     token_status: 'pre-token',
     watchlist: snapshot.watchlist.includes(s.p.slug),
     age_days: s.v.age,
-    implied_value_usd: s.v.implied,
+    implied_value_usd: s.expected,
+    curve_implied_value_usd: s.v.implied,
     expected_value_usd: s.expected,
     launch_odds: s.odds,
     // Patched by buildRadar with the bootstrap band times the odds; the point value stands in until then.
@@ -1724,6 +1736,7 @@ export function radarRow(row: BoardRow, watchlist: Set<string>, oddsBands?: Laun
     launch_odds: row.launch_odds,
     launch_odds_band: band === null ? 'age unknown' : band.band,
     implied_value_usd: row.implied_value_usd,
+    curve_implied_value_usd: row.curve_implied_value_usd,
     expected_value_usd: row.expected_value_usd,
     curve_value_usd: row.model.curve_value_usd,
     category_factor: row.model.category_factor,
@@ -1914,14 +1927,23 @@ export function boardIssue(board: BoardRow[], snapshot: Snapshot): string | null
   if (board.length >= 2 && board[0]!.expected_value_usd === board[board.length - 1]!.expected_value_usd) {
     return `all ${board.length} rows share the same expected value $${board[0]!.expected_value_usd}: a board that ranks nothing by value is not a ranking`;
   }
+  // Radar-10: mirror the server gate's sorted_by_value row exactly — it checks
+  // implied_value_usd, not expected_value_usd. Radar-9 failed here (69 inversions:
+  // implied held the curve value while ranks followed the expected value).
+  for (let i = 1; i < board.length; i++) if (board[i]!.implied_value_usd > board[i - 1]!.implied_value_usd) return `row ${i + 1} outranks row ${i} on implied value (server sorted_by_value)`;
+  if (board.length >= 2 && board[0]!.implied_value_usd === board[board.length - 1]!.implied_value_usd) {
+    return `all ${board.length} rows share the same implied value $${board[0]!.implied_value_usd}: a board that ranks nothing by value is not a ranking`;
+  }
   for (const r of board) {
     const steps = r.farm_steps;
     if (steps.length < 3 || steps.length > 12) return `${r.slug} has ${steps.length} farm steps`;
     for (const s of steps) if (s.length < 20 || s.length > 600) return `${r.slug} has a farm step of ${s.length} characters`;
     if (!Number.isSafeInteger(r.implied_value_usd) || r.implied_value_usd <= 0) return `${r.slug} has implied value ${r.implied_value_usd}`;
+    if (!Number.isSafeInteger(r.curve_implied_value_usd) || r.curve_implied_value_usd <= 0) return `${r.slug} has curve-implied value ${r.curve_implied_value_usd}`;
     if (!Number.isSafeInteger(r.expected_value_usd) || r.expected_value_usd <= 0) return `${r.slug} has expected value ${r.expected_value_usd}`;
     if (!(r.launch_odds > 0 && r.launch_odds <= 1)) return `${r.slug} has launch odds ${r.launch_odds}`;
-    if (r.expected_value_usd !== Math.max(1, Math.round(r.implied_value_usd * r.launch_odds))) return `${r.slug} has an expected value that is not its implied value times its launch odds`;
+    if (r.implied_value_usd !== r.expected_value_usd) return `${r.slug} has an implied value that is not its expected value`;
+    if (r.expected_value_usd !== Math.max(1, Math.round(r.curve_implied_value_usd * r.launch_odds))) return `${r.slug} has an expected value that is not its curve-implied value times its launch odds`;
     if (r.expected_low_usd > r.expected_value_usd || r.expected_value_usd > r.expected_high_usd) return `${r.slug} has an expected-value band that does not contain its expected value`;
     if (!['FARM', 'THIN', 'SKIP'].includes(r.farm.verdict)) return `${r.slug} has farm verdict ${r.farm.verdict}`;
     if (Math.abs(r.farm.net_usd - (r.farm.gas_usd + r.farm.opportunity_usd)) > 0.011) return `${r.slug} has a net farm cost that is not gas plus opportunity cost`;
